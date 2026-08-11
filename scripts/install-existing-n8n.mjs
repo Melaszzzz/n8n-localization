@@ -6,7 +6,7 @@ import { execFileSync, spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
 const projectDirectory = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const supportedVersion = '2.33.7';
+const supportedVersion = '2.34.4';
 const marker = '<script src="/static/zh-cn.js" data-n8n-zh-cn></script>';
 const manifestName = '.n8n-zh-cn-install.json';
 

@@ -1,6 +1,6 @@
 {
   "name": "n8n-zh-cn",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": false,
   "description": "Simplified Chinese localization installer for self-hosted n8n.",
   "keywords": [
@@ -57,7 +57,7 @@
     "logs": "node scripts/run-with-node24.mjs scripts/logs-n8n.mjs"
   },
   "devDependencies": {
-    "n8n": "2.33.7"
+    "n8n": "2.34.4"
   },
   "engines": {
     "node": ">=18"
