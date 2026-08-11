@@ -9,9 +9,10 @@
 | 语言代码 | 语言 | 状态 | 完整适配基线 |
 | --- | --- | --- | --- |
 | `zh-CN` | 简体中文 | 已完成 | n8n 2.34.4 |
+| `zh-TW` | 繁體中文（台灣） | 预览 | n8n 2.34.4 |
+| `es` | 西班牙语 | 预览 | n8n 2.34.4 |
 
-后续语言会共用同一套安装、校验和发布流程。当前只对上表列出的语言提供可安装词库。
-计划语言及其发布门槛见[多语言路线图](ROADMAP.md)。
+预览语言已具备全量自动化键覆盖并通过安装器校验，但仍需熟练使用该语言的人在真实 n8n 界面中审校。计划语言及其发布门槛见[多语言路线图](ROADMAP.md)。
 
 ## 特点
 
@@ -46,6 +47,8 @@ npx --yes --package git+https://github.com/Melaszzzz/n8n-localization.git n8n-lo
 npx --yes --package git+https://github.com/Melaszzzz/n8n-localization.git n8n-localize --locale zh-CN
 ```
 
+繁體中文（台灣）将语言代码改为 `zh-TW`；西班牙语改为 `es`。安装预览语言前，安装器会明确提示其审核状态。
+
 如果安装器没有自动找到 n8n，可以指定 n8n 项目、`node_modules` 或包目录：
 
 ```bash
@@ -68,7 +71,7 @@ npx --yes --package git+https://github.com/Melaszzzz/n8n-localization.git n8n-lo
 npx --yes --package git+https://github.com/Melaszzzz/n8n-localization.git n8n-localize --locale zh-CN --uninstall
 ```
 
-卸载器只恢复本项目管理的文件。安装后被修改过的文件会报告冲突并保留。
+卸载器只恢复本项目管理的文件。安装后被修改过的文件会报告冲突并保留。切换语言前先卸载当前语言。
 
 ## 翻译原则
 

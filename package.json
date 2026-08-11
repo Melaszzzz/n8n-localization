@@ -1,8 +1,8 @@
 {
   "name": "n8n-localization",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "private": false,
-  "description": "Safe, removable localization installer for self-hosted n8n. Simplified Chinese is currently available.",
+  "description": "Safe, removable multilingual interface localization for self-hosted n8n.",
   "keywords": [
     "n8n",
     "i18n",
@@ -12,7 +12,10 @@
     "multilingual",
     "chinese",
     "simplified-chinese",
+    "traditional-chinese",
+    "spanish",
     "zh-cn",
+    "zh-tw",
     "self-hosted"
   ],
   "author": "Melas",
@@ -53,7 +56,7 @@
     "access": "public"
   },
   "scripts": {
-    "test": "node scripts/validate-package.mjs",
+    "test": "node scripts/validate-package.mjs && node scripts/test-installer.mjs",
     "setup:runtime:unix": "bash scripts/install-node24.sh",
     "setup:runtime:windows": "powershell -ExecutionPolicy Bypass -File scripts\\install-node24.ps1",
     "deps": "node scripts/run-npm24.mjs install --save-exact --no-audit --no-fund",

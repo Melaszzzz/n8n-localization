@@ -4,8 +4,21 @@ import { fileURLToPath } from 'node:url';
 
 const scriptsDirectory = path.dirname(fileURLToPath(import.meta.url));
 const projectDirectory = path.resolve(scriptsDirectory, '..');
-const partsDirectory = path.join(projectDirectory, 'localization', 'parts');
-const overridesFile = path.join(projectDirectory, 'localization', 'overrides.json');
+const localeRegistry = JSON.parse(
+  fs.readFileSync(path.join(projectDirectory, 'locales.json'), 'utf8'),
+);
+const localeArgumentIndex = process.argv.indexOf('--locale');
+if (localeArgumentIndex >= 0 && !process.argv[localeArgumentIndex + 1]) {
+  throw new Error('--locale requires a registered locale code.');
+}
+const locale = localeArgumentIndex >= 0
+  ? process.argv[localeArgumentIndex + 1]
+  : localeRegistry.defaultLocale;
+const localeConfig = localeRegistry.locales[locale];
+if (!localeConfig) throw new Error(`Unsupported locale: ${locale}`);
+const dictionaryDirectory = path.resolve(projectDirectory, localeConfig.dictionaryDirectory);
+const partsDirectory = path.join(dictionaryDirectory, 'parts');
+const overridesFile = path.join(dictionaryDirectory, 'overrides.json');
 const targetArgumentIndex = process.argv.indexOf('--target');
 if (targetArgumentIndex >= 0 && !process.argv[targetArgumentIndex + 1]) {
   throw new Error('--target requires the path to an existing node_modules directory.');
@@ -18,7 +31,7 @@ const outputFile = path.join(
   'n8n-editor-ui',
   'dist',
   'static',
-  'zh-cn.js',
+  localeConfig.overlayFile,
 );
 
 if (!fs.existsSync(partsDirectory)) {
@@ -88,8 +101,10 @@ const serializedDictionary = JSON.stringify(dictionary, null, 2);
 const runtime = String.raw`(() => {
   'use strict';
 
-  if (globalThis.__N8N_ZH_CN_OVERLAY__) return;
-  globalThis.__N8N_ZH_CN_OVERLAY__ = true;
+  const activeLocale = ${JSON.stringify(locale)};
+  const overlayGuard = '__N8N_LOCALIZATION_' + activeLocale.replace(/[^A-Za-z0-9]/g, '_') + '__';
+  if (globalThis[overlayGuard]) return;
+  globalThis[overlayGuard] = true;
 
   const dictionary = ${serializedDictionary};
   const templateToken = /\{[^{}]+\}|%s/g;
@@ -190,6 +205,10 @@ const runtime = String.raw`(() => {
     'Midnight',
     'Noon',
   ]);
+  const scheduleTriggerLabels = new Set([
+    'Schedule Trigger',
+    dictionary['Schedule Trigger'],
+  ].filter(Boolean));
   const pendingRoots = new Set();
   let framePending = false;
 
@@ -213,7 +232,8 @@ const runtime = String.raw`(() => {
   function isSafeScheduleNodeUi(element, value) {
     if (!(element instanceof Element) || !safeScheduleOptionText.has(value?.trim())) return false;
     const dialog = element.closest('dialog, [role="dialog"]');
-    if (!dialog || !/(Schedule Trigger|定时触发器)/.test(dialog.textContent ?? '')) return false;
+    if (!dialog || ![...scheduleTriggerLabels].some((label) =>
+      (dialog.textContent ?? '').includes(label))) return false;
     if (element.closest('table, [role="grid"], .cm-editor, .monaco-editor')) return false;
     return Boolean(element.closest('button, [role="button"], [role="combobox"], [role="option"]'));
   }
@@ -223,7 +243,7 @@ const runtime = String.raw`(() => {
     const dialog = element.closest('dialog, [role="dialog"]');
     if (!dialog || element.closest('table, [role="grid"], .cm-editor, .monaco-editor')) return;
     const isScheduleOption = safeScheduleOptionText.has(element.value) &&
-      /(Schedule Trigger|定时触发器)/.test(dialog.textContent ?? '');
+      [...scheduleTriggerLabels].some((label) => (dialog.textContent ?? '').includes(label));
     const isRenderedSelectLabel = element.readOnly || element.matches('[role="combobox"]') ||
       Boolean(element.closest('[role="combobox"], .el-select, .el-select-v2'));
     if (!isScheduleOption && !isRenderedSelectLabel) return;
@@ -281,15 +301,11 @@ const runtime = String.raw`(() => {
     return null;
   }
 
-  const relativeTimeUnits = Object.freeze({
-    second: '秒',
-    minute: '分钟',
-    hour: '小时',
-    day: '天',
-    week: '周',
-    month: '个月',
-    year: '年',
-  });
+  const relativeTimeUnits = Object.freeze(activeLocale === 'zh-TW' ? {
+    second: '秒', minute: '分鐘', hour: '小時', day: '天', week: '週', month: '個月', year: '年',
+  } : activeLocale === 'zh-CN' ? {
+    second: '秒', minute: '分钟', hour: '小时', day: '天', week: '周', month: '个月', year: '年',
+  } : {});
   const monthNumbers = Object.freeze({
     January: 1, February: 2, March: 3, April: 4, May: 5, June: 6,
     July: 7, August: 8, September: 9, October: 10, November: 11, December: 12,
@@ -308,20 +324,49 @@ const runtime = String.raw`(() => {
 
     if (inResourceCard) {
       const relative = text.match(/^(\d+) (second|minute|hour|day|week|month|year)s? ago$/);
-      if (relative) translated = relative[1] + relativeTimeUnits[relative[2]] + '前';
+      if (relative) {
+        if (activeLocale === 'es') {
+          const count = Number(relative[1]);
+          const units = {
+            second: ['segundo', 'segundos'], minute: ['minuto', 'minutos'],
+            hour: ['hora', 'horas'], day: ['día', 'días'], week: ['semana', 'semanas'],
+            month: ['mes', 'meses'], year: ['año', 'años'],
+          };
+          translated = 'hace ' + relative[1] + ' ' + units[relative[2]][count === 1 ? 0 : 1];
+        } else if (activeLocale === 'zh-CN' || activeLocale === 'zh-TW') {
+          translated = relative[1] + relativeTimeUnits[relative[2]] + '前';
+        }
+      }
 
       const created = text.match(/^Created (\d{1,2}) ([A-Z][a-z]+)(?: (\d{4}))?$/);
       if (created && monthNumbers[created[2]]) {
-        translated = '创建于 ' + (created[3] ? created[3] + '年' : '') +
-          monthNumbers[created[2]] + '月' + created[1] + '日';
+        if (activeLocale === 'es') {
+          const months = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
+            'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+          translated = 'Creado el ' + created[1] + ' de ' + months[monthNumbers[created[2]] - 1] +
+            (created[3] ? ' de ' + created[3] : '');
+        } else if (activeLocale === 'zh-CN' || activeLocale === 'zh-TW') {
+          translated = (activeLocale === 'zh-TW' ? '建立於 ' : '创建于 ') +
+            (created[3] ? created[3] + '年' : '') + monthNumbers[created[2]] + '月' + created[1] + '日';
+        }
       }
     }
 
     if (inPagination) {
       const total = text.match(/^Total (\d+)$/);
-      if (total) translated = '共 ' + total[1] + ' 条';
+      if (total) {
+        if (activeLocale === 'es') translated = 'Total: ' + total[1];
+        else if (activeLocale === 'zh-CN' || activeLocale === 'zh-TW') {
+          translated = '共 ' + total[1] + (activeLocale === 'zh-TW' ? ' 筆' : ' 条');
+        }
+      }
       const pageSize = text.match(/^(\d+)\/page$/);
-      if (pageSize) translated = pageSize[1] + ' 条/页';
+      if (pageSize) {
+        if (activeLocale === 'es') translated = pageSize[1] + '/página';
+        else if (activeLocale === 'zh-CN' || activeLocale === 'zh-TW') {
+          translated = pageSize[1] + (activeLocale === 'zh-TW' ? ' 筆/頁' : ' 条/页');
+        }
+      }
     }
 
     return translated ? match[1] + translated + match[3] : null;
@@ -388,7 +433,7 @@ const runtime = String.raw`(() => {
     }
   }
 
-  document.documentElement.lang = 'zh-CN';
+  document.documentElement.lang = activeLocale;
   const start = () => {
     schedule(document.body);
     // Some Element Plus controls assign their visible input value as a DOM
@@ -409,7 +454,8 @@ const runtime = String.raw`(() => {
       attributes: true,
       attributeFilter: translatedAttributes,
     });
-    console.info('[n8n-zh-CN] 中文覆盖层已启用，共 ' + Object.keys(dictionary).length + ' 条。');
+    console.info('[n8n-localization] ' + activeLocale + ' overlay enabled with ' +
+      Object.keys(dictionary).length + ' entries.');
   };
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start, { once: true });
@@ -419,7 +465,7 @@ const runtime = String.raw`(() => {
 
 fs.writeFileSync(outputFile, runtime, 'utf8');
 console.log(
-  `Built zh-CN overlay with ${Object.keys(dictionary).length} entries ` +
+  `Built ${locale} overlay with ${Object.keys(dictionary).length} entries ` +
     `from ${partFiles.length} files and ${Object.keys(overrides).length} overrides.`,
 );
 console.log(`Output: ${outputFile}`);

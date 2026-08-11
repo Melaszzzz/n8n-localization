@@ -17,7 +17,13 @@ Run:
 npx --yes --package git+https://github.com/Melaszzzz/n8n-localization.git n8n-localize --list-locales
 ```
 
-The current complete locale is `zh-CN` (Simplified Chinese).
+Available locales:
+
+- `zh-CN`: Simplified Chinese, complete.
+- `zh-TW`: Traditional Chinese (Taiwan), preview.
+- `es`: Spanish, preview.
+
+Preview locales pass automated coverage and installer checks but still need proficient-speaker UI review. Do not describe them as fully human-reviewed.
 
 ## Install
 
@@ -51,3 +57,4 @@ npx --yes --package git+https://github.com/Melaszzzz/n8n-localization.git n8n-lo
 ```
 
 The uninstaller restores only files managed by this project and preserves files changed after installation.
+Uninstall the active locale before installing a different locale.

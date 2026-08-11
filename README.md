@@ -9,9 +9,10 @@ Community-maintained interface localization for existing self-hosted n8n install
 | Locale | Language | Status | Full baseline |
 | --- | --- | --- | --- |
 | `zh-CN` | Simplified Chinese | Complete | n8n 2.34.4 |
+| `zh-TW` | Traditional Chinese (Taiwan) | Preview | n8n 2.34.4 |
+| `es` | Spanish | Preview | n8n 2.34.4 |
 
-Additional locales will use the same installer, validation, and release process. Only languages listed above are currently available.
-Planned locales and their release gates are tracked in the [localization roadmap](ROADMAP.md).
+Preview locales have full automated key coverage and pass installer validation, but still need proficient-speaker review in the live n8n interface. Planned locales and their release gates are tracked in the [localization roadmap](ROADMAP.md).
 
 ## Why this package
 
@@ -46,6 +47,8 @@ Install Simplified Chinese:
 npx --yes --package git+https://github.com/Melaszzzz/n8n-localization.git n8n-localize --locale zh-CN
 ```
 
+Use `--locale zh-TW` for Traditional Chinese (Taiwan), or `--locale es` for Spanish. The installer prints a notice before installing a preview locale.
+
 If n8n cannot be found automatically, specify its project, `node_modules`, or package directory:
 
 ```bash
@@ -68,7 +71,7 @@ If this package is useful, star the repository to find it again and follow futur
 npx --yes --package git+https://github.com/Melaszzzz/n8n-localization.git n8n-localize --locale zh-CN --uninstall
 ```
 
-The uninstaller restores only files managed by this project. Files modified after installation are reported and preserved.
+The uninstaller restores only files managed by this project. Files modified after installation are reported and preserved. Uninstall the active locale before switching to another one.
 
 ## Translation policy
 

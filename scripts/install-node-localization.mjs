@@ -5,15 +5,18 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const projectDirectory = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const locale = 'zh-CN';
+const localeRegistry = JSON.parse(
+  fs.readFileSync(path.join(projectDirectory, 'locales.json'), 'utf8'),
+);
 const manifestName = '.codex-node-localization-manifest.json';
 const manifestFormat = 1;
 
 function usage(exitCode = 0) {
   const output = [
-    'Usage: node scripts/install-node-localization.mjs [--target <node_modules>] [--allow-partial] [--dry-run] [--json]',
+    'Usage: node scripts/install-node-localization.mjs [--locale <code>] [--target <node_modules>] [--allow-partial] [--dry-run] [--json]',
     '',
-    'Generates n8n node translation files from localization/parts and overrides.',
+    'Generates n8n node translation files for a locale registered in locales.json.',
+    '  --locale  Locale code; defaults to the registry default',
     '  --dry-run  Inspect and report without writing files',
     '  --json     Print a machine-readable report',
     '  --allow-partial  Skip node types that are absent in the installed n8n version',
@@ -28,6 +31,7 @@ function parseArguments(argv) {
     dryRun: false,
     json: false,
     allowPartial: false,
+    locale: localeRegistry.defaultLocale,
     target: path.join(projectDirectory, 'node_modules'),
   };
   for (let index = 0; index < argv.length; index += 1) {
@@ -35,6 +39,12 @@ function parseArguments(argv) {
     if (argument === '--dry-run') result.dryRun = true;
     else if (argument === '--json') result.json = true;
     else if (argument === '--allow-partial') result.allowPartial = true;
+    else if (argument === '--locale') {
+      const locale = argv[index + 1];
+      if (!locale) usage(2);
+      result.locale = locale;
+      index += 1;
+    }
     else if (argument === '--target') {
       const target = argv[index + 1];
       if (!target) usage(2);
@@ -58,9 +68,13 @@ function readJson(filePath) {
   }
 }
 
-function loadDictionary() {
+function loadDictionary(localeConfig) {
   const dictionary = new Map();
-  const partsDirectory = path.join(projectDirectory, 'localization', 'parts');
+  const dictionaryDirectory = path.resolve(projectDirectory, localeConfig.dictionaryDirectory);
+  const partsDirectory = path.join(dictionaryDirectory, 'parts');
+  if (!fs.existsSync(partsDirectory)) {
+    throw new Error(`Localization parts directory is missing: ${partsDirectory}`);
+  }
   const partFiles = fs
     .readdirSync(partsDirectory, { withFileTypes: true })
     .filter((entry) => entry.isFile() && entry.name.endsWith('.json'))
@@ -76,7 +90,7 @@ function loadDictionary() {
     }
   }
 
-  const overridesPath = path.join(projectDirectory, 'localization', 'overrides.json');
+  const overridesPath = path.join(dictionaryDirectory, 'overrides.json');
   if (fs.existsSync(overridesPath)) {
     for (const [english, chinese] of Object.entries(readJson(overridesPath))) {
       if (typeof english === 'string' && typeof chinese === 'string' && chinese && chinese !== english) {
@@ -210,7 +224,7 @@ function buildTranslation(descriptions, dictionary) {
   return { output, ...state };
 }
 
-function translationDirectory(nodeSourcePath) {
+function translationDirectory(nodeSourcePath, locale) {
   const nodeDirectory = path.dirname(nodeSourcePath);
   let maxVersion = null;
   for (const entry of fs.readdirSync(nodeDirectory, { withFileTypes: true })) {
@@ -225,7 +239,7 @@ function translationDirectory(nodeSourcePath) {
     : path.join(nodeDirectory, `v${maxVersion}`, 'translations', locale);
 }
 
-function isManagedRelativePath(packageDirectory, relativePath) {
+function isManagedRelativePath(packageDirectory, relativePath, locale) {
   if (typeof relativePath !== 'string' || path.isAbsolute(relativePath)) return false;
   const normalized = path.normalize(relativePath);
   if (normalized.startsWith(`..${path.sep}`) || normalized === '..') return false;
@@ -236,14 +250,14 @@ function isManagedRelativePath(packageDirectory, relativePath) {
   return absolute.startsWith(`${path.resolve(packageDirectory)}${path.sep}`);
 }
 
-function readManifest(manifestPath, packageDirectory) {
+function readManifest(manifestPath, packageDirectory, locale) {
   if (!fs.existsSync(manifestPath)) return { entries: [] };
   const manifest = readJson(manifestPath);
   if (manifest.format !== manifestFormat || !Array.isArray(manifest.entries)) {
     throw new Error(`Refusing to replace an unrecognized manifest: ${manifestPath}`);
   }
   for (const entry of manifest.entries) {
-    if (!isManagedRelativePath(packageDirectory, entry?.path) || typeof entry?.content !== 'string') {
+    if (!isManagedRelativePath(packageDirectory, entry?.path, locale) || typeof entry?.content !== 'string') {
       throw new Error(`Unsafe entry in localization manifest: ${manifestPath}`);
     }
   }
@@ -261,7 +275,7 @@ function atomicWrite(filePath, content) {
   }
 }
 
-function buildPackagePlan(packageInfo, dictionary) {
+function buildPackagePlan(packageInfo, dictionary, locale) {
   const packageJson = readJson(path.join(packageInfo.directory, 'package.json'));
   const declaredSources = new Set(packageJson?.n8n?.nodes ?? []);
   const knownNodes = readJson(path.join(packageInfo.directory, 'dist', 'known', 'nodes.json'));
@@ -286,7 +300,7 @@ function buildPackagePlan(packageInfo, dictionary) {
     structuralCollisions += built.structuralCollisions;
     valueCollisions += built.valueCollisions;
     if (built.strings === 0) continue;
-    const outputDirectory = translationDirectory(path.join(packageInfo.directory, metadata.sourcePath));
+    const outputDirectory = translationDirectory(path.join(packageInfo.directory, metadata.sourcePath), locale);
     const outputPath = path.join(outputDirectory, `${nodeName}.json`);
     const content = `${JSON.stringify(built.output, null, 2)}\n`;
     desired.set(path.relative(packageInfo.directory, outputPath), content);
@@ -303,9 +317,9 @@ function buildPackagePlan(packageInfo, dictionary) {
   };
 }
 
-function applyPackagePlan(packageInfo, plan, dryRun) {
+function applyPackagePlan(packageInfo, plan, dryRun, locale) {
   const manifestPath = path.join(packageInfo.directory, 'translations', locale, manifestName);
-  const previous = readManifest(manifestPath, packageInfo.directory);
+  const previous = readManifest(manifestPath, packageInfo.directory, locale);
   const previousByPath = new Map(previous.entries.map((entry) => [entry.path, entry.content]));
   const nextEntries = [];
   const report = { written: 0, unchanged: 0, removed: 0, conflicts: [], wouldWrite: 0, wouldRemove: 0 };
@@ -366,7 +380,10 @@ function applyPackagePlan(packageInfo, plan, dryRun) {
 
 function main() {
   const options = parseArguments(process.argv.slice(2));
-  const { dictionary, partFiles } = loadDictionary();
+  const localeConfig = localeRegistry.locales[options.locale];
+  if (!localeConfig) throw new Error(`Unsupported locale: ${options.locale}`);
+  const locale = options.locale;
+  const { dictionary, partFiles } = loadDictionary(localeConfig);
   const packages = [
     { name: 'n8n-nodes-base', directory: path.join(options.target, 'n8n-nodes-base') },
     {
@@ -380,8 +397,8 @@ function main() {
 
   for (const packageInfo of packages) {
     if (!fs.existsSync(packageInfo.directory)) continue;
-    const plan = buildPackagePlan(packageInfo, dictionary);
-    const applied = applyPackagePlan(packageInfo, plan, options.dryRun);
+    const plan = buildPackagePlan(packageInfo, dictionary, locale);
+    const applied = applyPackagePlan(packageInfo, plan, options.dryRun, locale);
     for (const node of plan.nodes) {
       if (packageInfo.name === 'n8n-nodes-base' && priorityNames.has(node.name)) {
         priority.push({ name: node.name, strings: node.strings, generated: true, path: node.path });

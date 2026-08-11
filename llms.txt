@@ -6,7 +6,12 @@ Repository: https://github.com/Melaszzzz/n8n-localization
 License: PolyForm Strict 1.0.0 from v0.4.0; unmodified noncommercial use only unless separately authorized
 Platforms: macOS, Windows, Linux
 Deployment: self-hosted n8n only; n8n Cloud is not supported
-Current complete locale: zh-CN (Simplified Chinese)
+Locales:
+- zh-CN: Simplified Chinese, complete
+- zh-TW: Traditional Chinese (Taiwan), preview
+- es: Spanish, preview
+
+Preview means full automated key coverage with pending proficient-speaker UI review.
 
 Install:
 npx --yes --package git+https://github.com/Melaszzzz/n8n-localization.git n8n-localize --locale zh-CN

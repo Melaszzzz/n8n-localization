@@ -1,0 +1,22 @@
+{
+  "Add another trigger": "Agregar otro activador",
+  "Triggers start your workflow. Workflows can have multiple triggers.": "Los activadores inician su flujo de trabajo. Los flujos de trabajo pueden tener múltiples activadores.",
+  "When should this workflow run?": "¿Cuándo debe ejecutarse este flujo de trabajo?",
+  "On a schedule": "En un horario",
+  "Runs the flow every day, hour, or custom interval": "Ejecuta el flujo cada día, hora o intervalo personalizado",
+  "On webhook call": "Activar webhook Llamada",
+  "Runs the flow on receiving an HTTP request": "Ejecuta el flujo al recibir una solicitud HTTP ",
+  "On form submission": "Sobre la presentación del formulario",
+  "Generate webforms in n8n and pass their responses to the workflow": "Generar formularios web en n8n y pasar sus respuestas al flujo de trabajo",
+  "Form": "Formulario",
+  "Add next form page": "Agregar la siguiente página del formulario",
+  "Trigger manually": "Activar manualmente",
+  "Runs the flow on clicking a button in n8n. Good for getting started quickly": "Ejecuta el flujo al hacer clic en un botón en n8n.",
+  "On chat message": "Mensaje de chat",
+  "Runs the flow when a user sends a chat message. For use with AI nodes": "Ejecuta el flujo cuando un usuario envía un mensaje de chat. Para su uso con nodos AI ",
+  "What happens next?": "¿Qué pasa después?",
+  "What triggers this workflow?": "¿Qué activa este flujo de trabajo?",
+  "A trigger is a step that starts your workflow": "Un activador es un paso que inicia su flujo de trabajo",
+  "When executed by another workflow": "Cuando se ejecuta por otro flujo de trabajo",
+  "Runs the flow when called by the Execute Workflow node from a different workflow": "Ejecuta el flujo cuando es llamado por el nodo Ejecutar flujo de trabajo desde un flujo de trabajo diferente"
+}

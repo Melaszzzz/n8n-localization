@@ -1,6 +1,6 @@
 # Localization Roadmap
 
-This roadmap describes planned work. It does not mean that any locale below is currently available. The authoritative list of installable locales remains [`locales.json`](locales.json).
+This roadmap describes planned and review work. The authoritative list of installable locales and their status remains [`locales.json`](locales.json).
 
 ## Translation source policy
 
@@ -10,9 +10,9 @@ This roadmap describes planned work. It does not mean that any locale below is c
 - Code, expressions, identifiers, JSON keys, API payloads, user data, secrets, product names, and established technical terms remain unchanged unless n8n itself presents them as translatable UI.
 - Ambiguous or safety-sensitive actions may use bilingual labels when that improves precision without changing the underlying value.
 
-## Shared foundation
+## Shared foundation — completed
 
-Before a second locale is published, the current single-locale implementation must be generalized without changing the behavior of `zh-CN`:
+The original single-locale implementation has been generalized without changing the behavior of `zh-CN`:
 
 1. Extract the English key set from a pinned n8n baseline and retain source provenance.
 2. Give each locale its own dictionary and override paths, declared through the existing locale registry.
@@ -45,6 +45,8 @@ For every locale, "complete" means:
 
 ### 1. Traditional Chinese — `zh-TW`
 
+**Current status:** Preview candidate with full automated key coverage. Terminology and structural checks pass; proficient-speaker review in the live interface is still required.
+
 **Entry conditions**
 
 - The shared multi-locale foundation is complete and `zh-CN` regression tests pass unchanged.
@@ -75,6 +77,8 @@ For every locale, "complete" means:
 - Smoke tests cover installation, representative editor and node screens, workflow serialization, and uninstall on all three operating systems.
 
 ### 2. Spanish — `es`
+
+**Current status:** Preview candidate with full automated key coverage. Automated terminology and structural checks pass; proficient-speaker review in the live interface is still required.
 
 **Entry conditions**
 

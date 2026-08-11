@@ -1,0 +1,22 @@
+{
+  "Add another trigger": "新增另一個觸發器",
+  "Triggers start your workflow. Workflows can have multiple triggers.": "觸發器用於啟動工作流程。一個工作流程可以有多個觸發器。",
+  "When should this workflow run?": "這個工作流程應在何時執行？",
+  "On a schedule": "按計畫執行",
+  "Runs the flow every day, hour, or custom interval": "每天、每小時或按自訂時間間隔執行工作流程",
+  "On webhook call": "收到 Webhook 呼叫時",
+  "Runs the flow on receiving an HTTP request": "收到 HTTP 請求時執行工作流程",
+  "On form submission": "提交表單時",
+  "Generate webforms in n8n and pass their responses to the workflow": "在 n8n 中生成網頁表單，並將表單回應傳遞給工作流程",
+  "Form": "表單",
+  "Add next form page": "新增下一個表單頁面",
+  "Trigger manually": "手動觸發",
+  "Runs the flow on clicking a button in n8n. Good for getting started quickly": "點選 n8n 中的按鈕時執行工作流程，適合快速上手",
+  "On chat message": "收到聊天訊息時",
+  "Runs the flow when a user sends a chat message. For use with AI nodes": "使用者傳送聊天訊息時執行工作流程，用於配合 AI 節點",
+  "What happens next?": "接下來會發生什麼？",
+  "What triggers this workflow?": "什麼會觸發這個工作流程？",
+  "A trigger is a step that starts your workflow": "觸發器是啟動工作流程的步驟",
+  "When executed by another workflow": "由另一個工作流程執行時",
+  "Runs the flow when called by the Execute Workflow node from a different workflow": "當另一個工作流程透過“執行工作流程”節點呼叫時執行此工作流程"
+}

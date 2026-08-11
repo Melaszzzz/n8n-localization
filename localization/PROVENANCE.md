@@ -1,8 +1,16 @@
-# 汉化来源与许可说明
+# 翻译来源与许可说明
 
 ## 原始英文来源
 
-本项目的英文键来自本机已安装的 n8n 2.34.4 发行包，包括官方 `@n8n/i18n` 英文资源、`n8n-nodes-base` 与 `@n8n/n8n-nodes-langchain` 的可见节点定义。中文由本项目独立翻译并按本机版本校验。
+本项目的英文键来自本机已安装的 n8n 2.34.4 发行包，包括官方 `@n8n/i18n` 英文资源、`n8n-nodes-base` 与 `@n8n/n8n-nodes-langchain` 的可见节点定义。当前基线包含 33,240 个唯一英文键。
+
+## 各语言生成方式
+
+- `zh-CN`：由本项目独立翻译，并在真实 n8n 界面中持续复核。
+- `zh-TW`：以现有简体词库作候选种子，再逐键参照英文源校正台湾软件术语、歧义和地区用法；当前仍为等待台湾熟练使用者界面审校的预览版。
+- `es`：直接以英文键为输入。高频界面使用本机 Codex CLI 分批生成，节点长尾使用离线 `Helsinki-NLP/opus-mt-en-es` 生成，再执行术语统一及代码、JSON、URL、占位符等安全复核；当前仍为等待西语熟练使用者界面审校的预览版。
+
+自动化生成只用于候选文本，不等同于母语质量证明。每种语言的具体审计结果记录在对应语言目录中。
 
 ## 社区参考边界
 
@@ -18,8 +26,8 @@
 
 `scripts/build-localization.mjs` 和 `scripts/install-node-localization.mjs` 生成的文件位于 `node_modules` 及 n8n 本地缓存目录，不是翻译源文件。`scripts/translate-node-localization.mjs` 只以当前安装包中的英文可见文案为输入，通过 stdin 批量生成并严格校验翻译源。重新安装依赖后可通过 `npm run localize` 幂等重建。
 
-当前 n8n 2.34.4 的节点覆盖审计为 27,853/27,853；安装器生成 563 个节点翻译文件、48,962 个原生翻译落点。该口径排除代码、表达式、用户数据、品牌名和应保持原样的纯技术标记，并非对未来版本或任意社区节点的永久覆盖承诺。
+当前三个语言包均保留同一组 33,240 个英文键；不应翻译的代码、表达式、用户数据、品牌名和纯技术标记会保持原样。安装到其他 n8n 版本时只处理仍能精确匹配的内容，未匹配文案保留英文，不对未来版本或任意社区节点作永久覆盖承诺。
 
 ## 许可状态
 
-本项目原创安装脚本与中文译文从 `v0.4.0` 起按 PolyForm Strict License 1.0.0 提供；此前至 `v0.3.3` 的发布版本仍适用其发布时的 MIT License。仓库保留 `LICENSE`、`LICENSING.md` 与 `NOTICE`。n8n 本体不包含在本项目中，仍遵循 [n8n LICENSE.md](https://github.com/n8n-io/n8n/blob/master/LICENSE.md)。
+本项目原创安装脚本与翻译词库从 `v0.4.0` 起按 PolyForm Strict License 1.0.0 提供；此前至 `v0.3.3` 的发布版本仍适用其发布时的 MIT License。仓库保留 `LICENSE`、`LICENSING.md` 与 `NOTICE`。n8n 本体不包含在本项目中，仍遵循 [n8n LICENSE.md](https://github.com/n8n-io/n8n/blob/master/LICENSE.md)。

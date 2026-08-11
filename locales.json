@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "defaultLocale": "zh-CN",
   "locales": {
     "zh-CN": {
@@ -11,6 +11,26 @@
       "overlayFile": "zh-cn.js",
       "markerAttribute": "data-n8n-zh-cn",
       "manifestName": ".n8n-zh-cn-install.json"
+    },
+    "zh-TW": {
+      "nativeName": "繁體中文（台灣）",
+      "englishName": "Traditional Chinese (Taiwan)",
+      "status": "preview",
+      "n8nBaseline": "2.34.4",
+      "dictionaryDirectory": "localization/locales/zh-TW",
+      "overlayFile": "zh-tw.js",
+      "markerAttribute": "data-n8n-zh-tw",
+      "manifestName": ".n8n-zh-tw-install.json"
+    },
+    "es": {
+      "nativeName": "Español",
+      "englishName": "Spanish",
+      "status": "preview",
+      "n8nBaseline": "2.34.4",
+      "dictionaryDirectory": "localization/locales/es",
+      "overlayFile": "es.js",
+      "markerAttribute": "data-n8n-es",
+      "manifestName": ".n8n-es-install.json"
     }
   }
 }

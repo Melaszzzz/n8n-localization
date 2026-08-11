@@ -14,17 +14,17 @@ const supportedVersion =
 
 function usage(exitCode = 0) {
   const message = [
-    'n8n 界面语言包安装器',
+    'n8n localization installer',
     '',
-    '用法：',
+    'Usage:',
     '  n8n-localize [--locale zh-CN] [--target <node_modules>]',
     '  n8n-localize --uninstall [--locale zh-CN] [--target <node_modules>]',
     '  n8n-localize --dry-run [--locale zh-CN] [--target <node_modules>]',
     '  n8n-localize --list-locales',
     '',
-    '--locale 指定界面语言；当前默认为 zh-CN。',
-    '--target 可指向 node_modules、n8n 包目录，或包含 node_modules 的项目目录。',
-    `词典基线为 n8n ${supportedVersion}；其他版本按已有文案尽量匹配。`,
+    `--locale selects the interface locale; the default is ${localeRegistry.defaultLocale}.`,
+    '--target may point to node_modules, the n8n package, or a project containing node_modules.',
+    `The default dictionary baseline is n8n ${supportedVersion}; unmatched text stays in English.`,
   ].join('\n');
   fs.writeSync(exitCode ? process.stderr.fd : process.stdout.fd, `${message}\n`);
   process.exit(exitCode);
@@ -80,7 +80,7 @@ function normalizeTarget(candidate) {
 function discoverTarget(explicitTarget) {
   if (explicitTarget) {
     const target = normalizeTarget(explicitTarget);
-    if (!target) throw new Error(`指定路径中未找到 n8n：${explicitTarget}`);
+    if (!target) throw new Error(`Could not find n8n at the specified target: ${explicitTarget}`);
     return target;
   }
 
@@ -100,7 +100,7 @@ function discoverTarget(explicitTarget) {
     const target = normalizeTarget(candidate);
     if (target) return target;
   }
-  throw new Error('未自动找到 n8n。请使用 --target 指定现有 n8n 的 node_modules 路径。');
+  throw new Error('Could not find n8n automatically. Use --target to specify its project or node_modules path.');
 }
 
 function atomicWrite(filePath, content) {
@@ -139,13 +139,13 @@ function removeNativeTranslations(targetNodeModules, dryRun) {
     for (const entry of manifest.entries ?? []) {
       const outputPath = path.resolve(packageDirectory, entry.path);
       if (!outputPath.startsWith(`${path.resolve(packageDirectory)}${path.sep}`)) {
-        conflicts.push(`${entry.path}（路径不安全）`);
+        conflicts.push(`${entry.path} (unsafe path)`);
         remaining.push(entry);
         continue;
       }
       if (!fs.existsSync(outputPath)) continue;
       if (fs.readFileSync(outputPath, 'utf8') !== entry.content) {
-        conflicts.push(`${entry.path}（安装后被修改）`);
+        conflicts.push(`${entry.path} (modified after installation)`);
         remaining.push(entry);
         continue;
       }
@@ -174,22 +174,22 @@ function uninstall(targetNodeModules, editorDist, manifestPath, dryRun) {
       if (!dryRun) atomicWrite(indexPath, manifest.originalIndex);
       restoredIndex = true;
     } else {
-      conflicts.push('n8n-editor-ui/dist/index.html（安装后被修改）');
+      conflicts.push('n8n-editor-ui/dist/index.html (modified after installation)');
     }
     if (fs.existsSync(overlayPath) && fs.readFileSync(overlayPath, 'utf8') === manifest.overlayContent) {
       if (!dryRun) fs.unlinkSync(overlayPath);
       removedOverlay = true;
     } else if (fs.existsSync(overlayPath)) {
       conflicts.push(
-        `n8n-editor-ui/dist/static/${localeConfig.overlayFile}（安装后被修改）`,
+        `n8n-editor-ui/dist/static/${localeConfig.overlayFile} (modified after installation)`,
       );
     }
     if (!dryRun && conflicts.length === 0) fs.unlinkSync(manifestPath);
   }
 
-  console.log(`${dryRun ? '[dry-run] ' : ''}已处理原生节点翻译：${native.removed} 个文件`);
-  console.log(`${restoredIndex ? '将恢复/已恢复' : '未恢复'}编辑器入口，${removedOverlay ? '将移除/已移除' : '未移除'}语言覆盖层。`);
-  for (const conflict of conflicts) console.warn(`保留冲突文件：${conflict}`);
+  console.log(`${dryRun ? '[dry-run] ' : ''}Managed native node translation files: ${native.removed}`);
+  console.log(`Editor entry: ${restoredIndex ? 'restored' : 'unchanged'}; overlay: ${removedOverlay ? 'removed' : 'unchanged'}.`);
+  for (const conflict of conflicts) console.warn(`Preserved conflicting file: ${conflict}`);
   if (conflicts.length) process.exitCode = 1;
 }
 
@@ -207,41 +207,83 @@ if (options.listLocales) {
 const localeConfig = localeRegistry.locales[options.locale];
 if (!localeConfig) {
   throw new Error(
-    `不支持的语言：${options.locale}。请运行 --list-locales 查看可用语言。`,
+    `Unsupported locale: ${options.locale}. Run --list-locales to see available locales.`,
+  );
+}
+if (localeConfig.status === 'preview') {
+  console.warn(
+    `Locale notice: ${localeConfig.nativeName} (${options.locale}) is a preview. ` +
+      'It passed automated validation but has not completed native-speaker review.',
   );
 }
 const marker = `<script src="/static/${localeConfig.overlayFile}" ${localeConfig.markerAttribute}></script>`;
 const manifestName = localeConfig.manifestName;
 const targetNodeModules = discoverTarget(options.target);
 const n8nPackage = readJson(path.join(targetNodeModules, 'n8n', 'package.json'));
-if (n8nPackage.version !== supportedVersion) {
+if (n8nPackage.version !== localeConfig.n8nBaseline) {
   console.warn(
-    `版本提示：词典基线为 n8n ${supportedVersion}，当前找到 ${n8nPackage.version}。` +
-      '安装器会翻译能够精确匹配的内容；新增或已改变的文案将保持英文。',
+    `Version notice: the ${options.locale} baseline is n8n ${localeConfig.n8nBaseline}; ` +
+      `found ${n8nPackage.version}. Exact matches will be translated and changed text will stay in English.`,
   );
 }
 
 const editorDist = path.join(targetNodeModules, 'n8n-editor-ui', 'dist');
 const indexPath = path.join(editorDist, 'index.html');
 const manifestPath = path.join(editorDist, manifestName);
-if (!fs.existsSync(indexPath)) throw new Error(`未找到 n8n 编辑器入口：${indexPath}`);
+if (!fs.existsSync(indexPath)) throw new Error(`Could not find the n8n editor entry: ${indexPath}`);
+const currentIndexBeforeInstall = fs.readFileSync(indexPath, 'utf8');
+const otherInstalledLocale = Object.entries(localeRegistry.locales).find(
+  ([code, details]) =>
+    code !== options.locale && currentIndexBeforeInstall.includes(details.markerAttribute),
+);
+if (!options.uninstall && otherInstalledLocale) {
+  throw new Error(
+    `${otherInstalledLocale[0]} is already installed. Run --locale ${otherInstalledLocale[0]} --uninstall before installing ${options.locale}.`,
+  );
+}
+if (
+  !options.uninstall &&
+  !currentIndexBeforeInstall.includes(localeConfig.markerAttribute) &&
+  !currentIndexBeforeInstall.includes('</title>')
+) {
+  throw new Error('Could not find a safe injection point in the n8n editor entry.');
+}
 
-console.log(`目标 n8n：${path.join(targetNodeModules, 'n8n')} (${n8nPackage.version})`);
-console.log(`界面语言：${localeConfig.nativeName} (${options.locale})`);
+console.log(`Target n8n: ${path.join(targetNodeModules, 'n8n')} (${n8nPackage.version})`);
+console.log(`Interface locale: ${localeConfig.nativeName} (${options.locale})`);
 
 if (options.uninstall) {
   uninstall(targetNodeModules, editorDist, manifestPath, options.dryRun);
 } else if (options.dryRun) {
   runScript('scripts/install-node-localization.mjs', [
+    '--locale',
+    options.locale,
     '--target',
     targetNodeModules,
     '--allow-partial',
     '--dry-run',
   ]);
-  console.log(`[dry-run] 将生成 ${options.locale} 覆盖层并安全注入 n8n 编辑器入口。`);
+  console.log(`[dry-run] Would build the ${options.locale} overlay and inject it into the n8n editor entry.`);
 } else {
-  runScript('scripts/build-localization.mjs', ['--target', targetNodeModules]);
+  fs.accessSync(indexPath, fs.constants.R_OK | fs.constants.W_OK);
+  fs.accessSync(path.join(editorDist, 'static'), fs.constants.R_OK | fs.constants.W_OK);
   runScript('scripts/install-node-localization.mjs', [
+    '--locale',
+    options.locale,
+    '--target',
+    targetNodeModules,
+    '--allow-partial',
+    '--dry-run',
+  ]);
+  runScript('scripts/build-localization.mjs', [
+    '--locale',
+    options.locale,
+    '--target',
+    targetNodeModules,
+  ]);
+  runScript('scripts/install-node-localization.mjs', [
+    '--locale',
+    options.locale,
     '--target',
     targetNodeModules,
     '--allow-partial',
@@ -256,7 +298,7 @@ if (options.uninstall) {
     ? currentIndex
     : currentIndex.replace('</title>', `</title>\n    ${marker}`);
   if (installedIndex === currentIndex && !currentIndex.includes(localeConfig.markerAttribute)) {
-    throw new Error('无法在 n8n 编辑器入口中找到安全注入位置。');
+    throw new Error('Could not find a safe injection point in the n8n editor entry.');
   }
   atomicWrite(indexPath, installedIndex);
   atomicWrite(
@@ -269,5 +311,5 @@ if (options.uninstall) {
       overlayContent,
     }, null, 2)}\n`,
   );
-  console.log('界面语言包安装完成。重启现有 n8n 服务并强制刷新浏览器即可生效。');
+  console.log('Localization installed. Restart the existing n8n service and reload the editor without browser cache.');
 }
