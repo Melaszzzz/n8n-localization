@@ -2,7 +2,7 @@
   "name": "n8n-zh-cn",
   "version": "0.1.0",
   "private": false,
-  "description": "Versioned Simplified Chinese localization installer for an existing self-hosted n8n installation.",
+  "description": "Simplified Chinese localization installer for self-hosted n8n.",
   "license": "MIT",
   "type": "module",
   "bin": {
