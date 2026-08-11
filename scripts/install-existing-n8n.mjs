@@ -25,7 +25,7 @@ function usage(exitCode = 0) {
     '--target 可指向 node_modules、n8n 包目录，或包含 node_modules 的项目目录。',
     `词典基线为 n8n ${supportedVersion}；其他版本按已有文案尽量匹配。`,
   ].join('\n');
-  (exitCode ? console.error : console.log)(message);
+  fs.writeSync(exitCode ? process.stderr.fd : process.stdout.fd, `${message}\n`);
   process.exit(exitCode);
 }
 
@@ -194,9 +194,13 @@ function uninstall(targetNodeModules, editorDist, manifestPath, dryRun) {
 
 const options = parseArguments(process.argv.slice(2));
 if (options.listLocales) {
-  for (const [code, details] of Object.entries(localeRegistry.locales)) {
-    console.log(`${code}\t${details.nativeName}\t${details.englishName}\t${details.status}`);
-  }
+  const localeList = Object.entries(localeRegistry.locales)
+    .map(
+      ([code, details]) =>
+        `${code}\t${details.nativeName}\t${details.englishName}\t${details.status}`,
+    )
+    .join('\n');
+  fs.writeSync(process.stdout.fd, `${localeList}\n`);
   process.exit(0);
 }
 const localeConfig = localeRegistry.locales[options.locale];

@@ -1,6 +1,6 @@
 {
   "name": "n8n-localization",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "private": false,
   "description": "Safe, removable localization installer for self-hosted n8n. Simplified Chinese is currently available.",
   "keywords": [
