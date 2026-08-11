@@ -1,6 +1,6 @@
 {
   "name": "n8n-localization",
-  "version": "0.3.3",
+  "version": "0.4.0",
   "private": false,
   "description": "Safe, removable localization installer for self-hosted n8n. Simplified Chinese is currently available.",
   "keywords": [
@@ -24,7 +24,7 @@
   "bugs": {
     "url": "https://github.com/Melaszzzz/n8n-localization/issues"
   },
-  "license": "MIT",
+  "license": "SEE LICENSE IN LICENSE",
   "type": "module",
   "bin": {
     "n8n-localize": "scripts/install-existing-n8n.mjs",
@@ -43,6 +43,7 @@
     "uninstall.ps1",
     "README.md",
     "README.zh-CN.md",
+    "LICENSING.md",
     "AI_INSTALL.md",
     "llms.txt",
     "LICENSE",

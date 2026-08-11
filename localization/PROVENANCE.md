@@ -22,4 +22,4 @@
 
 ## 许可状态
 
-本项目原创安装脚本与中文译文按 MIT License 发布，并在仓库中保留 `LICENSE` 与 `NOTICE`。n8n 本体不包含在本项目中，仍遵循 [n8n LICENSE.md](https://github.com/n8n-io/n8n/blob/master/LICENSE.md)。
+本项目原创安装脚本与中文译文从 `v0.4.0` 起按 PolyForm Strict License 1.0.0 提供；此前至 `v0.3.3` 的发布版本仍适用其发布时的 MIT License。仓库保留 `LICENSE`、`LICENSING.md` 与 `NOTICE`。n8n 本体不包含在本项目中，仍遵循 [n8n LICENSE.md](https://github.com/n8n-io/n8n/blob/master/LICENSE.md)。

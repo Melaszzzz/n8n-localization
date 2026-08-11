@@ -93,4 +93,6 @@ GitHub Actions 会在 macOS、Windows 和 Linux 上检查词典、安装器和�
 
 ## 许可
 
-本项目的安装器和译文采用 [MIT License](LICENSE)。项目不包含 n8n 本体；n8n 的许可以 [n8n 官方仓库](https://github.com/n8n-io/n8n/blob/master/LICENSE.md) 为准。其他说明见 [NOTICE](NOTICE)。
+从 `v0.4.0` 起，本项目以 [PolyForm Strict License 1.0.0](LICENSE) 作为源码可见许可。允许原样用于非商业用途；商用、修改、二次开发、衍生作品及重新分发均须另行取得书面授权。详见 [LICENSING.md](LICENSING.md)。
+
+项目不包含 n8n 本体；n8n 的许可以 [n8n 官方仓库](https://github.com/n8n-io/n8n/blob/master/LICENSE.md) 为准。其他说明见 [NOTICE](NOTICE)。

@@ -93,4 +93,6 @@ GitHub Actions validate dictionaries, installers, and package contents on macOS,
 
 ## License
 
-The installer and translations in this repository are available under the [MIT License](LICENSE). n8n is not included and remains subject to the [n8n license](https://github.com/n8n-io/n8n/blob/master/LICENSE.md). See [NOTICE](NOTICE) for details.
+Releases from `v0.4.0` onward are source-available under the [PolyForm Strict License 1.0.0](LICENSE). Unmodified noncommercial use is permitted; commercial use, modification, derivative works, and redistribution require separate written authorization. See [LICENSING.md](LICENSING.md).
+
+n8n is not included and remains subject to the [n8n license](https://github.com/n8n-io/n8n/blob/master/LICENSE.md). See [NOTICE](NOTICE) for details.

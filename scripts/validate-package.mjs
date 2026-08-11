@@ -9,6 +9,7 @@ const overridesFile = path.join(projectDirectory, 'localization', 'overrides.jso
 const requiredFiles = [
   'LICENSE',
   'NOTICE',
+  'LICENSING.md',
   'README.md',
   'README.zh-CN.md',
   'AI_INSTALL.md',
