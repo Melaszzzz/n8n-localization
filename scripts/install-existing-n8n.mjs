@@ -7,18 +7,21 @@ import { fileURLToPath } from 'node:url';
 
 const projectDirectory = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const supportedVersion = '2.34.4';
-const marker = '<script src="/static/zh-cn.js" data-n8n-zh-cn></script>';
-const manifestName = '.n8n-zh-cn-install.json';
+const localeRegistry = JSON.parse(
+  fs.readFileSync(path.join(projectDirectory, 'locales.json'), 'utf8'),
+);
 
 function usage(exitCode = 0) {
   const message = [
-    'n8n 简体中文汉化安装器',
+    'n8n 界面语言包安装器',
     '',
     '用法：',
-    '  node scripts/install-existing-n8n.mjs [--target <node_modules>]',
-    '  node scripts/install-existing-n8n.mjs --uninstall [--target <node_modules>]',
-    '  node scripts/install-existing-n8n.mjs --dry-run [--target <node_modules>]',
+    '  n8n-localize [--locale zh-CN] [--target <node_modules>]',
+    '  n8n-localize --uninstall [--locale zh-CN] [--target <node_modules>]',
+    '  n8n-localize --dry-run [--locale zh-CN] [--target <node_modules>]',
+    '  n8n-localize --list-locales',
     '',
+    '--locale 指定界面语言；当前默认为 zh-CN。',
     '--target 可指向 node_modules、n8n 包目录，或包含 node_modules 的项目目录。',
     `词典基线为 n8n ${supportedVersion}；其他版本按已有文案尽量匹配。`,
   ].join('\n');
@@ -27,14 +30,25 @@ function usage(exitCode = 0) {
 }
 
 function parseArguments(argv) {
-  const options = { target: null, uninstall: false, dryRun: false };
+  const options = {
+    target: null,
+    locale: localeRegistry.defaultLocale,
+    listLocales: false,
+    uninstall: false,
+    dryRun: false,
+  };
   for (let index = 0; index < argv.length; index += 1) {
     const argument = argv[index];
     if (argument === '--target') {
       if (!argv[index + 1]) usage(2);
       options.target = path.resolve(argv[index + 1]);
       index += 1;
-    } else if (argument === '--uninstall') options.uninstall = true;
+    } else if (argument === '--locale') {
+      if (!argv[index + 1]) usage(2);
+      options.locale = argv[index + 1];
+      index += 1;
+    } else if (argument === '--list-locales') options.listLocales = true;
+    else if (argument === '--uninstall') options.uninstall = true;
     else if (argument === '--dry-run') options.dryRun = true;
     else if (argument === '--help' || argument === '-h') usage();
     else usage(2);
@@ -115,7 +129,7 @@ function removeNativeTranslations(targetNodeModules, dryRun) {
     const manifestPath = path.join(
       packageDirectory,
       'translations',
-      'zh-CN',
+      options.locale,
       '.codex-node-localization-manifest.json',
     );
     if (!fs.existsSync(manifestPath)) continue;
@@ -154,7 +168,7 @@ function uninstall(targetNodeModules, editorDist, manifestPath, dryRun) {
   if (fs.existsSync(manifestPath)) {
     const manifest = readJson(manifestPath);
     const indexPath = path.join(editorDist, 'index.html');
-    const overlayPath = path.join(editorDist, 'static', 'zh-cn.js');
+    const overlayPath = path.join(editorDist, 'static', localeConfig.overlayFile);
     if (fs.existsSync(indexPath) && fs.readFileSync(indexPath, 'utf8') === manifest.installedIndex) {
       if (!dryRun) atomicWrite(indexPath, manifest.originalIndex);
       restoredIndex = true;
@@ -165,18 +179,34 @@ function uninstall(targetNodeModules, editorDist, manifestPath, dryRun) {
       if (!dryRun) fs.unlinkSync(overlayPath);
       removedOverlay = true;
     } else if (fs.existsSync(overlayPath)) {
-      conflicts.push('n8n-editor-ui/dist/static/zh-cn.js（安装后被修改）');
+      conflicts.push(
+        `n8n-editor-ui/dist/static/${localeConfig.overlayFile}（安装后被修改）`,
+      );
     }
     if (!dryRun && conflicts.length === 0) fs.unlinkSync(manifestPath);
   }
 
   console.log(`${dryRun ? '[dry-run] ' : ''}已处理原生节点翻译：${native.removed} 个文件`);
-  console.log(`${restoredIndex ? '将恢复/已恢复' : '未恢复'}编辑器入口，${removedOverlay ? '将移除/已移除' : '未移除'}中文覆盖层。`);
+  console.log(`${restoredIndex ? '将恢复/已恢复' : '未恢复'}编辑器入口，${removedOverlay ? '将移除/已移除' : '未移除'}语言覆盖层。`);
   for (const conflict of conflicts) console.warn(`保留冲突文件：${conflict}`);
   if (conflicts.length) process.exitCode = 1;
 }
 
 const options = parseArguments(process.argv.slice(2));
+if (options.listLocales) {
+  for (const [code, details] of Object.entries(localeRegistry.locales)) {
+    console.log(`${code}\t${details.nativeName}\t${details.englishName}\t${details.status}`);
+  }
+  process.exit(0);
+}
+const localeConfig = localeRegistry.locales[options.locale];
+if (!localeConfig) {
+  throw new Error(
+    `不支持的语言：${options.locale}。请运行 --list-locales 查看可用语言。`,
+  );
+}
+const marker = `<script src="/static/${localeConfig.overlayFile}" ${localeConfig.markerAttribute}></script>`;
+const manifestName = localeConfig.manifestName;
 const targetNodeModules = discoverTarget(options.target);
 const n8nPackage = readJson(path.join(targetNodeModules, 'n8n', 'package.json'));
 if (n8nPackage.version !== supportedVersion) {
@@ -192,6 +222,7 @@ const manifestPath = path.join(editorDist, manifestName);
 if (!fs.existsSync(indexPath)) throw new Error(`未找到 n8n 编辑器入口：${indexPath}`);
 
 console.log(`目标 n8n：${path.join(targetNodeModules, 'n8n')} (${n8nPackage.version})`);
+console.log(`界面语言：${localeConfig.nativeName} (${options.locale})`);
 
 if (options.uninstall) {
   uninstall(targetNodeModules, editorDist, manifestPath, options.dryRun);
@@ -202,7 +233,7 @@ if (options.uninstall) {
     '--allow-partial',
     '--dry-run',
   ]);
-  console.log('[dry-run] 将生成中文覆盖层并安全注入 n8n 编辑器入口。');
+  console.log(`[dry-run] 将生成 ${options.locale} 覆盖层并安全注入 n8n 编辑器入口。`);
 } else {
   runScript('scripts/build-localization.mjs', ['--target', targetNodeModules]);
   runScript('scripts/install-node-localization.mjs', [
@@ -211,15 +242,15 @@ if (options.uninstall) {
     '--allow-partial',
   ]);
 
-  const overlayPath = path.join(editorDist, 'static', 'zh-cn.js');
+  const overlayPath = path.join(editorDist, 'static', localeConfig.overlayFile);
   const overlayContent = fs.readFileSync(overlayPath, 'utf8');
   const currentIndex = fs.readFileSync(indexPath, 'utf8');
   const previousManifest = fs.existsSync(manifestPath) ? readJson(manifestPath) : null;
   const originalIndex = previousManifest?.originalIndex ?? currentIndex;
-  const installedIndex = currentIndex.includes('data-n8n-zh-cn')
+  const installedIndex = currentIndex.includes(localeConfig.markerAttribute)
     ? currentIndex
     : currentIndex.replace('</title>', `</title>\n    ${marker}`);
-  if (installedIndex === currentIndex && !currentIndex.includes('data-n8n-zh-cn')) {
+  if (installedIndex === currentIndex && !currentIndex.includes(localeConfig.markerAttribute)) {
     throw new Error('无法在 n8n 编辑器入口中找到安全注入位置。');
   }
   atomicWrite(indexPath, installedIndex);
@@ -233,5 +264,5 @@ if (options.uninstall) {
       overlayContent,
     }, null, 2)}\n`,
   );
-  console.log('汉化安装完成。重启现有 n8n 服务并强制刷新浏览器即可生效。');
+  console.log('界面语言包安装完成。重启现有 n8n 服务并强制刷新浏览器即可生效。');
 }

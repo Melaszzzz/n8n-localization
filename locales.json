@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "defaultLocale": "zh-CN",
+  "locales": {
+    "zh-CN": {
+      "nativeName": "简体中文",
+      "englishName": "Simplified Chinese",
+      "status": "complete",
+      "n8nBaseline": "2.34.4",
+      "dictionaryDirectory": "localization",
+      "overlayFile": "zh-cn.js",
+      "markerAttribute": "data-n8n-zh-cn",
+      "manifestName": ".n8n-zh-cn-install.json"
+    }
+  }
+}

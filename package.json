@@ -1,12 +1,15 @@
 {
-  "name": "n8n-zh-cn",
-  "version": "0.2.0",
+  "name": "n8n-localization",
+  "version": "0.3.0",
   "private": false,
-  "description": "Simplified Chinese localization installer for self-hosted n8n.",
+  "description": "Safe, removable localization installer for self-hosted n8n. Simplified Chinese is currently available.",
   "keywords": [
     "n8n",
     "i18n",
     "localization",
+    "language-pack",
+    "translation",
+    "multilingual",
     "chinese",
     "simplified-chinese",
     "zh-cn",
@@ -15,18 +18,20 @@
   "author": "Melas",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Melaszzzz/n8n-chinese-localization.git"
+    "url": "git+https://github.com/Melaszzzz/n8n-localization.git"
   },
-  "homepage": "https://github.com/Melaszzzz/n8n-chinese-localization#readme",
+  "homepage": "https://github.com/Melaszzzz/n8n-localization#readme",
   "bugs": {
-    "url": "https://github.com/Melaszzzz/n8n-chinese-localization/issues"
+    "url": "https://github.com/Melaszzzz/n8n-localization/issues"
   },
   "license": "MIT",
   "type": "module",
   "bin": {
+    "n8n-localize": "scripts/install-existing-n8n.mjs",
     "n8n-zh-cn": "scripts/install-existing-n8n.mjs"
   },
   "files": [
+    "locales.json",
     "localization/",
     "scripts/build-localization.mjs",
     "scripts/install-node-localization.mjs",
@@ -37,6 +42,9 @@
     "install.ps1",
     "uninstall.ps1",
     "README.md",
+    "README.zh-CN.md",
+    "AI_INSTALL.md",
+    "llms.txt",
     "LICENSE",
     "NOTICE"
   ],

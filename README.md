@@ -1,91 +1,95 @@
-# n8n 简体中文汉化包
+# n8n Localization
 
-适用于自托管 n8n 的简体中文界面扩展（n8n Chinese localization / zh-CN）。项目只提供汉化文件和安装工具，不包含或重新分发 n8n。
+English | [简体中文](README.zh-CN.md)
 
-汉化仅作用于界面显示，不修改工作流、凭据、数据库、接口数据或用户输入。
+Community-maintained interface localization for existing self-hosted n8n installations. The project provides translation files and a reversible installer; it does not contain or redistribute n8n.
 
-## 特点
+## Available languages
 
-- 在已有 n8n 上安装，不替换整套编辑器构建产物。
-- 安装过程受清单管理，支持安全卸载。
-- 主界面与节点参数分别使用前端覆盖层和 n8n 原生翻译机制。
-- 版本不完全匹配时保留无法识别的英文，不阻止安装或启动。
-- 安装脚本在 macOS、Windows 和 Linux 上持续验证。
+| Locale | Language | Status | Full baseline |
+| --- | --- | --- | --- |
+| `zh-CN` | Simplified Chinese | Complete | n8n 2.34.4 |
 
-适合已经部署 n8n、希望单独安装中文界面并保留卸载能力的用户。如果需要包含 n8n 本体的中文 Docker 镜像，应选择镜像发行方案。
+Additional locales will use the same installer, validation, and release process. Only languages listed above are currently available.
 
-## 兼容性
+## Why this package
 
-- 支持 macOS、Windows 和 Linux。
-- 支持 npm 局部安装或全局安装的 n8n。
-- 以 n8n 2.34.4 为完整适配基线。
-- 其他版本按英文原文精确匹配；无法匹配的内容保留英文，不影响 n8n 运行。
-- 不支持 n8n Cloud。
-- Docker 部署需要在镜像构建阶段执行安装器。
+- Installs into an existing n8n installation without replacing the complete editor build.
+- Uses manifest-managed changes and supports safe removal.
+- Translates the main interface and node parameters through separate, compatible mechanisms.
+- Uses exact source-text matching. Unknown or changed text remains in English.
+- Preserves workflows, credentials, databases, API payloads, user input, code, and expressions.
+- Tested on macOS, Windows, and Linux.
 
-## 安装
+## Compatibility
 
-要求：本机已安装并能正常运行 n8n，Node.js 版本不低于 18。
+- Self-hosted n8n installed locally or globally with npm.
+- macOS, Windows, and Linux.
+- Docker when the installer is run while building the image.
+- n8n versions other than the full baseline are accepted; unmatched strings remain English.
+- n8n Cloud is not supported because its editor files cannot be modified.
+
+## Install
+
+Requirements: an existing working n8n installation and Node.js 18 or newer.
+
+List available languages:
 
 ```bash
-npx --yes --package git+https://github.com/Melaszzzz/n8n-chinese-localization.git n8n-zh-cn
+npx --yes --package git+https://github.com/Melaszzzz/n8n-localization.git n8n-localize --list-locales
 ```
 
-安装器会自动查找 n8n。也可以指定 n8n 项目、`node_modules` 或包目录：
+Install Simplified Chinese:
 
 ```bash
-npx --yes --package git+https://github.com/Melaszzzz/n8n-chinese-localization.git n8n-zh-cn --target /path/to/n8n/project
+npx --yes --package git+https://github.com/Melaszzzz/n8n-localization.git n8n-localize --locale zh-CN
 ```
 
-Windows PowerShell 示例：
+If n8n cannot be found automatically, specify its project, `node_modules`, or package directory:
+
+```bash
+npx --yes --package git+https://github.com/Melaszzzz/n8n-localization.git n8n-localize --locale zh-CN --target /path/to/n8n/project
+```
+
+Windows PowerShell:
 
 ```powershell
-npx --yes --package git+https://github.com/Melaszzzz/n8n-chinese-localization.git n8n-zh-cn --target "C:\path\to\n8n\project"
+npx --yes --package git+https://github.com/Melaszzzz/n8n-localization.git n8n-localize --locale zh-CN --target "C:\path\to\n8n\project"
 ```
 
-安装完成后重启 n8n，并强制刷新浏览器页面。
+Restart the existing n8n service after installation and reload the editor without browser cache.
 
-## 卸载
+If this package is useful, star the repository to find it again and follow future locale updates.
+
+## Uninstall
 
 ```bash
-npx --yes --package git+https://github.com/Melaszzzz/n8n-chinese-localization.git n8n-zh-cn --uninstall
+npx --yes --package git+https://github.com/Melaszzzz/n8n-localization.git n8n-localize --locale zh-CN --uninstall
 ```
 
-卸载器只恢复本项目管理的文件。用户自行修改的文件不会被覆盖或删除。
+The uninstaller restores only files managed by this project. Files modified after installation are reported and preserved.
 
-## 使用下载包
+## Translation policy
 
-macOS / Linux：
+- Prefer n8n's native node translation mechanism; use a restricted frontend overlay for missing editor text.
+- Keep established technical terms such as AI, API, HTTP, JSON, MCP, and Webhook in English.
+- Show ambiguous or safety-sensitive terms bilingually where that improves precision.
+- Never translate code, expressions, user data, field values, raw error details, workflow names, credential names, or secrets.
+- Never use fuzzy or substring replacement.
 
-```bash
-bash install.sh
-```
+## For AI assistants
 
-Windows PowerShell：
+Use the commands above only when the user already has a self-hosted n8n installation. Read [AI_INSTALL.md](AI_INSTALL.md) for target discovery, Docker guidance, safety constraints, and recovery steps. Machine-readable locale metadata is available in [locales.json](locales.json).
 
-```powershell
-powershell -ExecutionPolicy Bypass -File .\install.ps1
-```
-
-卸载时运行对应的 `uninstall.sh` 或 `uninstall.ps1`。
-
-## 翻译原则
-
-- 优先使用 n8n 原生节点翻译机制，主界面缺失部分由前端覆盖层补充。
-- AI、API、HTTP、JSON、MCP、Webhook 等通用技术术语保留原文。
-- 容易歧义或涉及风险的术语采用“中文（English）”。
-- 不翻译代码、表达式、用户数据、字段值、错误原文、工作流名称、凭据名称和密钥内容。
-- 只做精确匹配，不使用模糊替换。
-
-## 开发
+## Development
 
 ```bash
 npm test
 npm pack --dry-run
 ```
 
-GitHub Actions 在 macOS、Windows 和 Linux 上检查词典、安装脚本及 npm 包内容。来源与授权说明见 [localization/PROVENANCE.md](localization/PROVENANCE.md)。
+GitHub Actions validate dictionaries, installers, and package contents on macOS, Windows, and Linux. Translation provenance is documented in [localization/PROVENANCE.md](localization/PROVENANCE.md).
 
-## 许可
+## License
 
-安装脚本与中文译文采用 [MIT License](LICENSE)。n8n 本体不包含在本项目中，其许可证以 [n8n 官方仓库](https://github.com/n8n-io/n8n/blob/master/LICENSE.md) 为准。其他说明见 [NOTICE](NOTICE)。
+The installer and translations in this repository are available under the [MIT License](LICENSE). n8n is not included and remains subject to the [n8n license](https://github.com/n8n-io/n8n/blob/master/LICENSE.md). See [NOTICE](NOTICE) for details.

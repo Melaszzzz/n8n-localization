@@ -10,6 +10,10 @@ const requiredFiles = [
   'LICENSE',
   'NOTICE',
   'README.md',
+  'README.zh-CN.md',
+  'AI_INSTALL.md',
+  'llms.txt',
+  'locales.json',
   'install.sh',
   'uninstall.sh',
   'install.ps1',
@@ -22,6 +26,18 @@ const requiredFiles = [
 for (const relativePath of requiredFiles) {
   if (!fs.existsSync(path.join(projectDirectory, relativePath))) {
     throw new Error(`Missing required package file: ${relativePath}`);
+  }
+}
+
+const localeRegistry = JSON.parse(
+  fs.readFileSync(path.join(projectDirectory, 'locales.json'), 'utf8'),
+);
+if (localeRegistry.schemaVersion !== 1 || !localeRegistry.locales?.[localeRegistry.defaultLocale]) {
+  throw new Error('locales.json must declare a valid default locale.');
+}
+for (const [locale, details] of Object.entries(localeRegistry.locales)) {
+  if (!details.nativeName || !details.englishName || !details.status) {
+    throw new Error(`locales.json contains incomplete metadata for ${locale}.`);
   }
 }
 

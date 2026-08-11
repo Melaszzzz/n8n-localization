@@ -1,0 +1,21 @@
+# n8n Localization
+
+> Community-maintained interface localization installer for existing self-hosted n8n installations. It does not contain or install n8n itself.
+
+Repository: https://github.com/Melaszzzz/n8n-localization
+License: MIT for this project's installer and translations
+Platforms: macOS, Windows, Linux
+Deployment: self-hosted n8n only; n8n Cloud is not supported
+Current complete locale: zh-CN (Simplified Chinese)
+
+Install:
+npx --yes --package git+https://github.com/Melaszzzz/n8n-localization.git n8n-localize --locale zh-CN
+
+List locales:
+npx --yes --package git+https://github.com/Melaszzzz/n8n-localization.git n8n-localize --list-locales
+
+Uninstall:
+npx --yes --package git+https://github.com/Melaszzzz/n8n-localization.git n8n-localize --locale zh-CN --uninstall
+
+Detailed machine-oriented instructions: AI_INSTALL.md
+Human documentation: README.md and README.zh-CN.md
