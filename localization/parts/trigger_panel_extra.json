@@ -1,0 +1,22 @@
+{
+  "Add another trigger": "添加另一个触发器",
+  "Triggers start your workflow. Workflows can have multiple triggers.": "触发器用于启动工作流。一个工作流可以有多个触发器。",
+  "When should this workflow run?": "这个工作流应在何时运行？",
+  "On a schedule": "按计划运行",
+  "Runs the flow every day, hour, or custom interval": "每天、每小时或按自定义时间间隔运行工作流",
+  "On webhook call": "收到 Webhook 调用时",
+  "Runs the flow on receiving an HTTP request": "收到 HTTP 请求时运行工作流",
+  "On form submission": "提交表单时",
+  "Generate webforms in n8n and pass their responses to the workflow": "在 n8n 中生成网页表单，并将表单响应传递给工作流",
+  "Form": "表单",
+  "Add next form page": "添加下一个表单页面",
+  "Trigger manually": "手动触发",
+  "Runs the flow on clicking a button in n8n. Good for getting started quickly": "点击 n8n 中的按钮时运行工作流，适合快速上手",
+  "On chat message": "收到聊天消息时",
+  "Runs the flow when a user sends a chat message. For use with AI nodes": "用户发送聊天消息时运行工作流，用于配合 AI 节点",
+  "What happens next?": "接下来会发生什么？",
+  "What triggers this workflow?": "什么会触发这个工作流？",
+  "A trigger is a step that starts your workflow": "触发器是启动工作流的步骤",
+  "When executed by another workflow": "由另一个工作流执行时",
+  "Runs the flow when called by the Execute Workflow node from a different workflow": "当另一个工作流通过“执行工作流”节点调用时运行此工作流"
+}

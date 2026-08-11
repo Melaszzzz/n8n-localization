@@ -1,0 +1,48 @@
+{
+  "name": "n8n-zh-cn",
+  "version": "0.1.0",
+  "private": false,
+  "description": "Versioned Simplified Chinese localization installer for an existing self-hosted n8n installation.",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "n8n-zh-cn": "scripts/install-existing-n8n.mjs"
+  },
+  "files": [
+    "localization/",
+    "scripts/build-localization.mjs",
+    "scripts/install-node-localization.mjs",
+    "scripts/install-existing-n8n.mjs",
+    "scripts/validate-package.mjs",
+    "install.sh",
+    "uninstall.sh",
+    "install.ps1",
+    "uninstall.ps1",
+    "README.md",
+    "LICENSE",
+    "NOTICE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "test": "node scripts/validate-package.mjs",
+    "setup:runtime:unix": "bash scripts/install-node24.sh",
+    "setup:runtime:windows": "powershell -ExecutionPolicy Bypass -File scripts\\install-node24.ps1",
+    "deps": "node scripts/run-npm24.mjs install --save-exact --no-audit --no-fund",
+    "localize": "node scripts/run-with-node24.mjs scripts/localize.mjs",
+    "install:existing": "node scripts/install-existing-n8n.mjs",
+    "start": "node scripts/run-with-node24.mjs scripts/start-localized-n8n.mjs background",
+    "start:foreground": "node scripts/run-with-node24.mjs scripts/start-localized-n8n.mjs foreground",
+    "stop": "node scripts/run-with-node24.mjs scripts/stop-n8n.mjs",
+    "status": "node scripts/run-with-node24.mjs scripts/status-n8n.mjs",
+    "logs": "node scripts/run-with-node24.mjs scripts/logs-n8n.mjs"
+  },
+  "devDependencies": {
+    "n8n": "2.33.7"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "packageManager": "npm@11.17.0"
+}
