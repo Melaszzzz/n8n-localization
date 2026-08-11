@@ -11,6 +11,7 @@ Community-maintained interface localization for existing self-hosted n8n install
 | `zh-CN` | Simplified Chinese | Complete | n8n 2.34.4 |
 
 Additional locales will use the same installer, validation, and release process. Only languages listed above are currently available.
+Planned locales and their release gates are tracked in the [localization roadmap](ROADMAP.md).
 
 ## Why this package
 
