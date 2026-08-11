@@ -10,7 +10,7 @@ const requiredFiles = [
   'LICENSE',
   'NOTICE',
   'README.md',
-  'README.zh-CN.md',
+  'README.en.md',
   'AI_INSTALL.md',
   'llms.txt',
   'locales.json',

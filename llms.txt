@@ -18,4 +18,4 @@ Uninstall:
 npx --yes --package git+https://github.com/Melaszzzz/n8n-localization.git n8n-localize --locale zh-CN --uninstall
 
 Detailed machine-oriented instructions: AI_INSTALL.md
-Human documentation: README.md and README.zh-CN.md
+Human documentation: README.md (Chinese) and README.en.md (English)

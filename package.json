@@ -1,6 +1,6 @@
 {
   "name": "n8n-localization",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "private": false,
   "description": "Safe, removable localization installer for self-hosted n8n. Simplified Chinese is currently available.",
   "keywords": [
@@ -42,7 +42,7 @@
     "install.ps1",
     "uninstall.ps1",
     "README.md",
-    "README.zh-CN.md",
+    "README.en.md",
     "AI_INSTALL.md",
     "llms.txt",
     "LICENSE",
