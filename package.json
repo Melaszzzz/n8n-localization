@@ -1,6 +1,6 @@
 {
   "name": "n8n-localization",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "private": false,
   "description": "Safe, removable localization installer for self-hosted n8n. Simplified Chinese is currently available.",
   "keywords": [
@@ -63,9 +63,6 @@
     "stop": "node scripts/run-with-node24.mjs scripts/stop-n8n.mjs",
     "status": "node scripts/run-with-node24.mjs scripts/status-n8n.mjs",
     "logs": "node scripts/run-with-node24.mjs scripts/logs-n8n.mjs"
-  },
-  "devDependencies": {
-    "n8n": "2.34.4"
   },
   "engines": {
     "node": ">=18"

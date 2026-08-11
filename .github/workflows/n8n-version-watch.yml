@@ -28,7 +28,7 @@ jobs:
         id: versions
         shell: bash
         run: |
-          supported="$(node -p "require('./package.json').devDependencies.n8n")"
+          supported="$(node -p "require('./locales.json').locales[require('./locales.json').defaultLocale].n8nBaseline")"
           latest="$(npm view n8n version)"
           echo "supported=$supported" >> "$GITHUB_OUTPUT"
           echo "latest=$latest" >> "$GITHUB_OUTPUT"

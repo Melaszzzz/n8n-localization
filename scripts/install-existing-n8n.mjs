@@ -6,10 +6,11 @@ import { execFileSync, spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
 const projectDirectory = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const supportedVersion = '2.34.4';
 const localeRegistry = JSON.parse(
   fs.readFileSync(path.join(projectDirectory, 'locales.json'), 'utf8'),
 );
+const supportedVersion =
+  localeRegistry.locales[localeRegistry.defaultLocale].n8nBaseline;
 
 function usage(exitCode = 0) {
   const message = [
