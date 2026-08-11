@@ -1,6 +1,12 @@
 name: Watch n8n releases
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - package.json
+      - .github/workflows/n8n-version-watch.yml
   schedule:
     - cron: "15 1 * * 1"
   workflow_dispatch:
