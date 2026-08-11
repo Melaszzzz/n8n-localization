@@ -1,0 +1,71 @@
+name: Watch n8n releases
+
+on:
+  schedule:
+    - cron: "15 1 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Compare n8n versions
+        id: versions
+        shell: bash
+        run: |
+          supported="$(node -p "require('./package.json').devDependencies.n8n")"
+          latest="$(npm view n8n version)"
+          echo "supported=$supported" >> "$GITHUB_OUTPUT"
+          echo "latest=$latest" >> "$GITHUB_OUTPUT"
+
+      - name: Open maintenance issue
+        if: steps.versions.outputs.latest != steps.versions.outputs.supported
+        uses: actions/github-script@v7
+        env:
+          SUPPORTED_VERSION: ${{ steps.versions.outputs.supported }}
+          LATEST_VERSION: ${{ steps.versions.outputs.latest }}
+        with:
+          script: |
+            const title = `维护：适配 n8n ${process.env.LATEST_VERSION}`;
+            const issues = await github.paginate(github.rest.issues.listForRepo, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'all',
+              per_page: 100,
+            });
+
+            if (issues.some((issue) => !issue.pull_request && issue.title === title)) {
+              core.info(`Issue already exists: ${title}`);
+              return;
+            }
+
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title,
+              assignees: [context.repo.owner],
+              body: [
+                `npm 已发布 n8n ${process.env.LATEST_VERSION}。`,
+                '',
+                `当前完整适配基线：n8n ${process.env.SUPPORTED_VERSION}`,
+                '',
+                '维护检查：',
+                '- [ ] 安装目标版本并生成英文资源快照',
+                '- [ ] 审计新增或变化的界面文案',
+                '- [ ] 更新并复核中文词典',
+                '- [ ] 验证安装、卸载和工作流数据不受影响',
+                '- [ ] 通过 macOS、Windows、Linux 自动测试',
+                '- [ ] 发布新版本',
+                '',
+                '_此 Issue 由版本监控任务自动创建，同一 n8n 版本只创建一次。_',
+              ].join('\n'),
+            });

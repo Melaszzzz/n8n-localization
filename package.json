@@ -3,6 +3,24 @@
   "version": "0.1.0",
   "private": false,
   "description": "Simplified Chinese localization installer for self-hosted n8n.",
+  "keywords": [
+    "n8n",
+    "i18n",
+    "localization",
+    "chinese",
+    "simplified-chinese",
+    "zh-cn",
+    "self-hosted"
+  ],
+  "author": "Melas",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Melaszzzz/n8n-chinese-localization.git"
+  },
+  "homepage": "https://github.com/Melaszzzz/n8n-chinese-localization#readme",
+  "bugs": {
+    "url": "https://github.com/Melaszzzz/n8n-chinese-localization/issues"
+  },
   "license": "MIT",
   "type": "module",
   "bin": {
