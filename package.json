@@ -2,7 +2,7 @@
   "name": "n8n-localization",
   "version": "0.5.0",
   "private": false,
-  "description": "Safe, removable multilingual interface localization for self-hosted n8n.",
+  "description": "Safe, removable n8n localization for Simplified Chinese, Traditional Chinese, and Spanish.",
   "keywords": [
     "n8n",
     "i18n",

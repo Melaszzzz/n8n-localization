@@ -2,7 +2,7 @@
 
 Documentation: English | [简体中文](README.zh-CN.md)
 
-Community-maintained interface localization for existing self-hosted n8n installations. The project provides translation files and a reversible installer; it does not contain or redistribute n8n.
+Multilingual interface localization for existing self-hosted n8n installations, including Simplified Chinese (`zh-CN`), Traditional Chinese (`zh-TW`), and Spanish (`es`). The project provides translation files and a reversible installer; it does not contain or redistribute n8n.
 
 ## Available localization packages
 

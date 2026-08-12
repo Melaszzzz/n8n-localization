@@ -1,6 +1,6 @@
 # n8n Localization
 
-> Community-maintained interface localization installer for existing self-hosted n8n installations. It does not contain or install n8n itself.
+> Multilingual interface localization installer for self-hosted n8n, including Simplified Chinese, Traditional Chinese, and Spanish. It does not contain or install n8n itself.
 
 Repository: https://github.com/Melaszzzz/n8n-localization
 License: PolyForm Strict 1.0.0 from v0.4.0; unmodified noncommercial use only unless separately authorized
