@@ -14,6 +14,9 @@
     "simplified-chinese",
     "traditional-chinese",
     "spanish",
+    "n8n-spanish",
+    "n8n-chinese",
+    "n8n-i18n",
     "zh-cn",
     "zh-tw",
     "self-hosted"
