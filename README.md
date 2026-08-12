@@ -1,8 +1,8 @@
-# n8n Localization
+# n8n Localization — Chinese and Spanish Language Pack
 
 Documentation: English | [简体中文](README.zh-CN.md)
 
-Multilingual interface localization for existing self-hosted n8n installations, including Simplified Chinese (`zh-CN`), Traditional Chinese (`zh-TW`), and Spanish (`es`). The project provides translation files and a reversible installer; it does not contain or redistribute n8n.
+Chinese and Spanish interface localization for existing self-hosted n8n installations, including Simplified Chinese (`zh-CN`), Traditional Chinese (`zh-TW`), and Spanish (`es`). This n8n language pack provides translation files and a reversible installer; it does not contain or redistribute n8n.
 
 ## Available localization packages
 

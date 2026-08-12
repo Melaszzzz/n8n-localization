@@ -1,4 +1,4 @@
-# n8n Localization
+# n8n Localization — Chinese and Spanish Language Pack
 
 > Multilingual interface localization installer for self-hosted n8n, including Simplified Chinese, Traditional Chinese, and Spanish. It does not contain or install n8n itself.
 
