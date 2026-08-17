@@ -21,14 +21,14 @@ Taiwan technical translator.
 ## Automated coverage audit
 
 - Source files compared: 31 (30 parts plus overrides)
-- Source entries: 33,433
-- Candidate entries: 33,433
-- Unique English keys: 33,240
+- Source entries: 34,234
+- Candidate entries: 34,234
+- Unique English keys: 34,041
 - Entries adjusted by the Taiwan terminology/context pass beyond the raw
   OpenCC seed: 8,928
-- Values intentionally kept exactly equal to their English key: 1,233
+- Values intentionally kept exactly equal to their English key: 1,268
   (technical labels, identifiers, code, and examples)
-- Values with no Han characters: 1,274
+- Values with no Han characters: 1,310
 - Missing or extra keys: 0
 - Placeholder or HTML-token mismatches: 0
 - `item` keys incorrectly containing `專案`: 0
@@ -36,6 +36,14 @@ Taiwan technical translator.
 
 Repeated English keys across source parts explain the difference between entry
 count and unique-key count.
+
+## n8n 2.34.6 maintenance pass
+
+The 2.34.6 update added 801 previously uncovered or newly introduced English
+strings. They were translated directly from English, reviewed in a separate
+language-specific pass, and checked against the Taiwan terminology table.
+Agent, AI Assistant, end-user, account, connection, channel, and documentation
+terms received an additional deterministic consistency check.
 
 ## Second high-frequency Taiwan QA
 

@@ -8,9 +8,9 @@ Chinese and Spanish interface localization for existing self-hosted n8n installa
 
 | Locale | Language | Status | Full baseline |
 | --- | --- | --- | --- |
-| `zh-CN` | Simplified Chinese | Complete | n8n 2.34.4 |
-| `zh-TW` | Traditional Chinese (Taiwan) | Preview | n8n 2.34.4 |
-| `es` | Spanish | Preview | n8n 2.34.4 |
+| `zh-CN` | Simplified Chinese | Complete | n8n 2.34.6 |
+| `zh-TW` | Traditional Chinese (Taiwan) | Preview | n8n 2.34.6 |
+| `es` | Spanish | Preview | n8n 2.34.6 |
 
 Preview locales have full automated key coverage and pass installer validation, but still need proficient-speaker review in the live n8n interface. Planned locales and their release gates are tracked in the [localization roadmap](ROADMAP.md).
 

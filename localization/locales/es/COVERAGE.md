@@ -1,15 +1,15 @@
 # Spanish candidate coverage
 
-Audit date: 2026-08-12
-English source baseline: n8n 2.34.4
+Audit date: 2026-08-17
+English source baseline: n8n 2.34.6
 Status: preview; machine candidate awaiting native UI review
 
 ## Coverage
 
-- Source part files represented: **30 / 30**
-- Unique English source keys represented: **33,240 / 33,240 (100%)**
-- Entries across parts and overrides: **33,604**
-- Candidate values identical to English: **1,904**
+- Source part files represented: **31 / 31**
+- Unique English source keys represented: **34,041 / 34,041 (100%)**
+- Entries across parts and overrides: **34,405**
+- Candidate values identical to English: **1,942**
 - Long-tail node entries: **26,244** (24,649 changed; 1,595 intentionally or defensively unchanged)
 
 Identical values include code, queries, JSON/CSV examples, paths, identifiers, product names, international technical labels, and candidates restored to English because translating them could change behavior.
@@ -30,8 +30,8 @@ Identical values include code, queries, JSON/CSV examples, paths, identifiers, p
 `npm test` validates all three current locales and the installer lifecycle:
 
 ```text
-Validated 3 locales (zh-CN=33240, zh-TW=33240, es=33240),
-90 dictionary files, 99720 unique entries, 240 overrides,
+Validated 3 locales (zh-CN=34041, zh-TW=34041, es=34041),
+93 dictionary files, 102123 unique entries, 240 overrides,
 and 3 installer scripts.
 Installer lifecycle passed for zh-CN, zh-TW, es.
 ```
