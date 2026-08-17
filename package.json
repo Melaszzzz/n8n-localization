@@ -49,6 +49,7 @@
     "uninstall.ps1",
     "README.md",
     "README.zh-CN.md",
+    "README.es.md",
     "LICENSING.md",
     "AI_INSTALL.md",
     "llms.txt",
