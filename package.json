@@ -1,6 +1,6 @@
 {
   "name": "n8n-localization",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "private": false,
   "description": "Safe, removable n8n localization for Simplified Chinese, Traditional Chinese, and Spanish.",
   "keywords": [
@@ -60,7 +60,7 @@
     "access": "public"
   },
   "scripts": {
-    "test": "node scripts/validate-package.mjs && node scripts/test-installer.mjs",
+    "test": "node scripts/validate-package.mjs && node scripts/test-installer.mjs && node scripts/test-version-watch.mjs",
     "setup:runtime:unix": "bash scripts/install-node24.sh",
     "setup:runtime:windows": "powershell -ExecutionPolicy Bypass -File scripts\\install-node24.ps1",
     "deps": "node scripts/run-npm24.mjs install --save-exact --no-audit --no-fund",

@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - package.json
+      - locales.json
       - .github/workflows/n8n-version-watch.yml
   schedule:
     - cron: "15 1 * * 1"
@@ -36,18 +37,12 @@ jobs:
         run: |
           supported="$(node -p "require('./locales.json').locales[require('./locales.json').defaultLocale].n8nBaseline")"
           latest="$(npm view n8n version)"
-          baselines="$(node -p "[...new Set(Object.values(require('./locales.json').locales).map((locale) => locale.n8nBaseline))].join(',')")"
+          min_baseline="$(node -p "[...Object.values(require('./locales.json').locales)].map((locale) => locale.n8nBaseline).sort((a, b) => a.localeCompare(b, undefined, { numeric: true })).at(0)")"
           package_tag="v$(node -p "require('./package.json').version")"
-          if [[ "$baselines" == "$latest" ]]; then
-            all_locales_current=true
-          else
-            all_locales_current=false
-          fi
           echo "supported=$supported" >> "$GITHUB_OUTPUT"
           echo "latest=$latest" >> "$GITHUB_OUTPUT"
-          echo "baselines=$baselines" >> "$GITHUB_OUTPUT"
+          echo "min_baseline=$min_baseline" >> "$GITHUB_OUTPUT"
           echo "package_tag=$package_tag" >> "$GITHUB_OUTPUT"
-          echo "all_locales_current=$all_locales_current" >> "$GITHUB_OUTPUT"
 
       - name: Open maintenance issue
         if: steps.versions.outputs.latest != steps.versions.outputs.supported
@@ -93,10 +88,9 @@ jobs:
             });
 
       - name: Close completed maintenance issue
-        if: steps.versions.outputs.all_locales_current == 'true'
         uses: actions/github-script@v7
         env:
-          LATEST_VERSION: ${{ steps.versions.outputs.latest }}
+          MIN_BASELINE: ${{ steps.versions.outputs.min_baseline }}
           PACKAGE_TAG: ${{ steps.versions.outputs.package_tag }}
         with:
           script: |
@@ -115,54 +109,80 @@ jobs:
               throw error;
             }
 
-            if (release.draft || !release.published_at) {
+            if (release.draft || release.prerelease || !release.published_at) {
               core.info(`Release ${process.env.PACKAGE_TAG} is not fully published; keeping the maintenance Issue open.`);
               return;
             }
 
-            const title = `维护：适配 n8n ${process.env.LATEST_VERSION}`;
+            const titlePattern = /^维护：适配 n8n (\d+\.\d+\.\d+)$/;
+            const minimumBaseline = process.env.MIN_BASELINE.split('.').map(Number);
+            const compareVersions = (left, right) => {
+              for (let index = 0; index < 3; index += 1) {
+                if (left[index] !== right[index]) return left[index] - right[index];
+              }
+              return 0;
+            };
             const issues = await github.paginate(github.rest.issues.listForRepo, {
               owner: context.repo.owner,
               repo: context.repo.repo,
               state: 'open',
               per_page: 100,
             });
-            const issue = issues.find((candidate) => !candidate.pull_request && candidate.title === title);
-            if (!issue) {
-              core.info(`No open maintenance Issue found: ${title}`);
+            const candidates = issues.filter((candidate) => {
+              const match = !candidate.pull_request && candidate.title.match(titlePattern);
+              return match && compareVersions(match[1].split('.').map(Number), minimumBaseline) <= 0;
+            });
+            if (candidates.length === 0) {
+              core.info(`No open maintenance Issue found at or below n8n ${process.env.MIN_BASELINE}.`);
               return;
             }
 
-            const completedBody = (issue.body ?? '').replace(/^- \[ \]/gm, '- [x]');
-            if (completedBody !== issue.body) {
+            for (const issue of candidates) {
+              const issueVersion = issue.title.match(titlePattern)[1];
+              const sameBaseline = compareVersions(issueVersion.split('.').map(Number), minimumBaseline) === 0;
+              if (sameBaseline) {
+                const completedBody = (issue.body ?? '').replace(/^- \[ \]/gm, '- [x]');
+                if (completedBody !== issue.body) {
+                  await github.rest.issues.update({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    issue_number: issue.number,
+                    body: completedBody,
+                  });
+                }
+              }
+
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                body: sameBaseline
+                  ? [
+                      `已完成 n8n ${issueVersion} 适配。`,
+                      '',
+                      `发布版本：[${process.env.PACKAGE_TAG}](${release.html_url})`,
+                      '',
+                      '语言词典、安装/卸载回归及 macOS、Windows、Linux 自动测试已通过。',
+                      '',
+                      '_此 Issue 由版本监控任务自动关闭。_',
+                    ].join('\n')
+                  : [
+                      `n8n ${issueVersion} 的维护请求已被 n8n ${process.env.MIN_BASELINE} 基线覆盖。`,
+                      '',
+                      `发布版本：[${process.env.PACKAGE_TAG}](${release.html_url})`,
+                      '',
+                      '这是跳过中间版本后的关闭记录；未将该中间版本的检查清单标记为已完成。',
+                      '',
+                      '_此 Issue 由版本监控任务自动关闭。_',
+                    ].join('\n'),
+              });
+
               await github.rest.issues.update({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: issue.number,
-                body: completedBody,
+                state: 'closed',
+                state_reason: 'completed',
               });
+              core.info(`Closed Issue #${issue.number}: 维护：适配 n8n ${issueVersion}`);
             }
-
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: issue.number,
-              body: [
-                `已完成 n8n ${process.env.LATEST_VERSION} 适配。`,
-                '',
-                `发布版本：[${process.env.PACKAGE_TAG}](${release.html_url})`,
-                '',
-                '语言词典、安装/卸载回归及 macOS、Windows、Linux 自动测试已通过。',
-                '',
-                '_此 Issue 由版本监控任务自动关闭。_',
-              ].join('\n'),
-            });
-
-            await github.rest.issues.update({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: issue.number,
-              state: 'closed',
-              state_reason: 'completed',
-            });
-            core.info(`Closed Issue #${issue.number}: ${title}`);
