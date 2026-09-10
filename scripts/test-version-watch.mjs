@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
 // Exercise the actual github-script body without network access or GitHub writes.
-const yaml = fs.readFileSync(new URL('../.github/workflows/n8n-version-watch.yml', import.meta.url), 'utf8');
+const yaml = fs.readFileSync(new URL('../.github/workflows/n8n-version-watch.yml', import.meta.url), 'utf8').replace(/\r\n/g, '\n');
 const section = yaml.split('      - name: Close completed maintenance issue')[1];
 assert.ok(section, 'Missing maintenance close step');
 const script = section.split('          script: |\n')[1]
