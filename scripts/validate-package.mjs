@@ -11,6 +11,7 @@ const requiredFiles = [
   'README.md',
   'README.zh-CN.md',
   'README.es.md',
+  'README.ru.md',
   'AI_INSTALL.md',
   'llms.txt',
   'locales.json',

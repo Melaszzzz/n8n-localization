@@ -22,6 +22,7 @@ Available locales:
 - `zh-CN`: Simplified Chinese, complete.
 - `zh-TW`: Traditional Chinese (Taiwan), preview.
 - `es`: Spanish, preview.
+- `ru`: Russian, preview.
 
 Preview locales pass automated coverage and installer checks but still need proficient-speaker UI review. Do not describe them as fully human-reviewed.
 

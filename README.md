@@ -1,8 +1,8 @@
-# n8n Localization — Chinese and Spanish Language Pack
+# n8n Localization — Chinese, Spanish, and Russian Language Pack
 
-Documentation: English | [简体中文](README.zh-CN.md) | [Español](README.es.md)
+Documentation: English | [简体中文](README.zh-CN.md) | [Español](README.es.md) | [Русский](README.ru.md)
 
-Chinese and Spanish interface localization for existing self-hosted n8n installations, including Simplified Chinese (`zh-CN`), Traditional Chinese (`zh-TW`), and Spanish (`es`). This n8n language pack provides translation files and a reversible installer; it does not contain or redistribute n8n.
+Interface localization for existing self-hosted n8n installations, including Simplified Chinese (`zh-CN`), Traditional Chinese (`zh-TW`), Spanish (`es`), and Russian (`ru`). This n8n language pack provides translation files and a reversible installer; it does not contain or redistribute n8n.
 
 ## Available localization packages
 
@@ -11,6 +11,9 @@ Chinese and Spanish interface localization for existing self-hosted n8n installa
 | `zh-CN` | Simplified Chinese | Complete | n8n 2.38.6 |
 | `zh-TW` | Traditional Chinese (Taiwan) | Preview | n8n 2.38.6 |
 | `es` | Spanish | Preview | n8n 2.38.6 |
+| `ru` | Russian | Preview | n8n 2.34.6 |
+
+Russian preview retains the n8n 2.34.6 translation baseline; the 883 keys added for n8n 2.38.6 are included as explicit English fallbacks pending translation.
 
 Preview locales have full automated key coverage and pass installer validation, but still need proficient-speaker review in the live n8n interface. Planned locales and their release gates are tracked in the [localization roadmap](ROADMAP.md).
 
@@ -47,7 +50,7 @@ Install Simplified Chinese:
 npx --yes --package git+https://github.com/Melaszzzz/n8n-localization.git n8n-localize --locale zh-CN
 ```
 
-Use `--locale zh-TW` for Traditional Chinese (Taiwan), or `--locale es` for Spanish. The installer prints a notice before installing a preview locale.
+Use `--locale zh-TW` for Traditional Chinese (Taiwan), `--locale es` for Spanish, or `--locale ru` for Russian. The installer prints a notice before installing a preview locale.
 
 If n8n cannot be found automatically, specify its project, `node_modules`, or package directory:
 

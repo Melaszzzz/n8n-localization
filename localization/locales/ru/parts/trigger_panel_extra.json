@@ -1,0 +1,22 @@
+{
+  "Add another trigger": "Добавить ещё триггер",
+  "Triggers start your workflow. Workflows can have multiple triggers.": "Триггеры запускают ваш рабочий процесс. У рабочего процесса может быть несколько триггеров.",
+  "When should this workflow run?": "Когда должен запускаться этот рабочий процесс?",
+  "On a schedule": "По расписанию",
+  "Runs the flow every day, hour, or custom interval": "Запускает поток каждый день, час либо с заданным интервалом",
+  "On webhook call": "По вызову webhook",
+  "Runs the flow on receiving an HTTP request": "Запускает поток при получении HTTP-запроса",
+  "On form submission": "По отправке формы",
+  "Generate webforms in n8n and pass their responses to the workflow": "Создавайте веб-формы в n8n и передавайте их ответы в рабочий процесс",
+  "Form": "Форма",
+  "Add next form page": "Добавить следующую страницу формы",
+  "Trigger manually": "Запускать вручную",
+  "Runs the flow on clicking a button in n8n. Good for getting started quickly": "Запускает поток по нажатию кнопки в n8n. Удобно для быстрого старта",
+  "On chat message": "По сообщению в чате",
+  "Runs the flow when a user sends a chat message. For use with AI nodes": "Запускает поток, когда пользователь отправляет сообщение в чате. Для работы с AI-узлами",
+  "What happens next?": "Что происходит дальше?",
+  "What triggers this workflow?": "Что запускает этот рабочий процесс?",
+  "A trigger is a step that starts your workflow": "Триггер — это шаг, с которого начинается ваш рабочий процесс",
+  "When executed by another workflow": "При выполнении из другого рабочего процесса",
+  "Runs the flow when called by the Execute Workflow node from a different workflow": "Запускает поток при вызове узлом Execute Workflow из другого рабочего процесса"
+}

@@ -306,6 +306,24 @@ const runtime = String.raw`(() => {
   } : activeLocale === 'zh-CN' ? {
     second: '秒', minute: '分钟', hour: '小时', day: '天', week: '周', month: '个月', year: '年',
   } : {});
+  const russianPluralForms = Object.freeze({
+    second: ['секунду', 'секунды', 'секунд'],
+    minute: ['минуту', 'минуты', 'минут'],
+    hour: ['час', 'часа', 'часов'],
+    day: ['день', 'дня', 'дней'],
+    week: ['неделю', 'недели', 'недель'],
+    month: ['месяц', 'месяца', 'месяцев'],
+    year: ['год', 'года', 'лет'],
+  });
+
+  function russianPlural(count, forms) {
+    const lastDigit = count % 10;
+    const lastTwoDigits = count % 100;
+    if (lastDigit === 1 && lastTwoDigits !== 11) return forms[0];
+    if (lastDigit >= 2 && lastDigit <= 4 && (lastTwoDigits < 12 || lastTwoDigits > 14)) return forms[1];
+    return forms[2];
+  }
+
   const monthNumbers = Object.freeze({
     January: 1, February: 2, March: 3, April: 4, May: 5, June: 6,
     July: 7, August: 8, September: 9, October: 10, November: 11, December: 12,
@@ -333,6 +351,9 @@ const runtime = String.raw`(() => {
             month: ['mes', 'meses'], year: ['año', 'años'],
           };
           translated = 'hace ' + relative[1] + ' ' + units[relative[2]][count === 1 ? 0 : 1];
+        } else if (activeLocale === 'ru') {
+          translated = relative[1] + ' ' +
+            russianPlural(Number(relative[1]), russianPluralForms[relative[2]]) + ' назад';
         } else if (activeLocale === 'zh-CN' || activeLocale === 'zh-TW') {
           translated = relative[1] + relativeTimeUnits[relative[2]] + '前';
         }
@@ -345,6 +366,11 @@ const runtime = String.raw`(() => {
             'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
           translated = 'Creado el ' + created[1] + ' de ' + months[monthNumbers[created[2]] - 1] +
             (created[3] ? ' de ' + created[3] : '');
+        } else if (activeLocale === 'ru') {
+          const months = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
+            'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
+          translated = 'Создано ' + created[1] + ' ' + months[monthNumbers[created[2]] - 1] +
+            (created[3] ? ' ' + created[3] + ' г.' : '');
         } else if (activeLocale === 'zh-CN' || activeLocale === 'zh-TW') {
           translated = (activeLocale === 'zh-TW' ? '建立於 ' : '创建于 ') +
             (created[3] ? created[3] + '年' : '') + monthNumbers[created[2]] + '月' + created[1] + '日';
@@ -356,6 +382,7 @@ const runtime = String.raw`(() => {
       const total = text.match(/^Total (\d+)$/);
       if (total) {
         if (activeLocale === 'es') translated = 'Total: ' + total[1];
+        else if (activeLocale === 'ru') translated = 'Всего: ' + total[1];
         else if (activeLocale === 'zh-CN' || activeLocale === 'zh-TW') {
           translated = '共 ' + total[1] + (activeLocale === 'zh-TW' ? ' 筆' : ' 条');
         }
@@ -363,6 +390,7 @@ const runtime = String.raw`(() => {
       const pageSize = text.match(/^(\d+)\/page$/);
       if (pageSize) {
         if (activeLocale === 'es') translated = pageSize[1] + '/página';
+        else if (activeLocale === 'ru') translated = pageSize[1] + ' на странице';
         else if (activeLocale === 'zh-CN' || activeLocale === 'zh-TW') {
           translated = pageSize[1] + (activeLocale === 'zh-TW' ? ' 筆/頁' : ' 条/页');
         }

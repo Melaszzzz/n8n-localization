@@ -1,6 +1,6 @@
-# n8n Localization — Chinese and Spanish Language Pack
+# n8n Localization — Chinese, Spanish, and Russian Language Pack
 
-> Multilingual interface localization installer for self-hosted n8n, including Simplified Chinese, Traditional Chinese, and Spanish. It does not contain or install n8n itself.
+> Multilingual interface localization installer for self-hosted n8n, including Simplified Chinese, Traditional Chinese, Spanish, and Russian. It does not contain or install n8n itself.
 
 Repository: https://github.com/Melaszzzz/n8n-localization
 License: PolyForm Strict 1.0.0 from v0.4.0; unmodified noncommercial use only unless separately authorized
@@ -10,6 +10,7 @@ Locales:
 - zh-CN: Simplified Chinese, complete
 - zh-TW: Traditional Chinese (Taiwan), preview
 - es: Spanish, preview
+- ru: Russian, preview
 
 Preview means full automated key coverage with pending proficient-speaker UI review.
 
@@ -23,4 +24,4 @@ Uninstall:
 npx --yes --package git+https://github.com/Melaszzzz/n8n-localization.git n8n-localize --locale zh-CN --uninstall
 
 Detailed machine-oriented instructions: AI_INSTALL.md
-Human documentation: README.md (English) and README.zh-CN.md (Chinese)
+Human documentation: README.md (English), README.zh-CN.md (Chinese), README.es.md (Spanish), and README.ru.md (Russian)

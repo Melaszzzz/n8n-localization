@@ -31,6 +31,16 @@
       "overlayFile": "es.js",
       "markerAttribute": "data-n8n-es",
       "manifestName": ".n8n-es-install.json"
+    },
+    "ru": {
+      "nativeName": "Русский",
+      "englishName": "Russian",
+      "status": "preview",
+      "n8nBaseline": "2.34.6",
+      "dictionaryDirectory": "localization/locales/ru",
+      "overlayFile": "ru.js",
+      "markerAttribute": "data-n8n-ru",
+      "manifestName": ".n8n-ru-install.json"
     }
   }
 }

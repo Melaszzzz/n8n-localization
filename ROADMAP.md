@@ -102,11 +102,39 @@ For every locale, "complete" means:
 - Review by at least one proficient Spanish speaker, followed by a separate terminology pass.
 - Representative editor, node, credential, scheduling, and error flows pass UI and cross-platform installation tests.
 
-### 3. Brazilian Portuguese — `pt-BR`
+### 3. Russian — `ru`
+
+**Current status:** Preview candidate with full automated key coverage. Terminology and structural checks pass; proficient-speaker review in the live interface is still required.
 
 **Entry conditions**
 
-- The Spanish release has confirmed that independent Latin-script dictionaries do not leak values between locales.
+- The Spanish release has confirmed that independent non-CJK dictionaries do not leak values between locales.
+- A Russian terminology guide covers workflow automation, credentials, scheduling, data handling, and AI features, and freezes the do-not-translate list.
+
+**Human review focus**
+
+- Natural Russian product language rather than word-for-word English structure.
+- Correct case government, aspect, and imperative forms in button and menu labels.
+- Consistent grammatical gender and number agreement, including strings assembled around numeric placeholders.
+- Russian has three plural forms while the English source exposes two, so pipe-separated forms keep the source arity and the overlay applies full Russian pluralization only to the counts it renders itself.
+- Cyrillic label length in narrow node panels, dialogs, and table headers.
+
+**Definition of complete**
+
+- The standard completion definition is met.
+- Latin technical terms, product names, and code examples are preserved exactly as documented in the locale terminology guide.
+- Relative time, dates, and pagination rendered by the overlay use correct Russian declension.
+
+**Release gate**
+
+- Review by at least one proficient Russian speaker, followed by a separate terminology pass.
+- Representative editor, node, credential, scheduling, and error flows pass UI and cross-platform installation tests.
+
+### 4. Brazilian Portuguese — `pt-BR`
+
+**Entry conditions**
+
+- The Spanish and Russian releases have confirmed that independent non-CJK dictionaries do not leak values between locales.
 - A Brazilian Portuguese terminology guide and locale-specific orthography rules are approved.
 
 **Human review focus**
@@ -126,7 +154,7 @@ For every locale, "complete" means:
 - Review by at least one proficient Brazilian Portuguese speaker and a terminology consistency pass.
 - Cross-platform install, reinstall, partial-version compatibility, and uninstall tests pass.
 
-### 4. Japanese — `ja`
+### 5. Japanese — `ja`
 
 **Entry conditions**
 
@@ -150,7 +178,7 @@ For every locale, "complete" means:
 - Native-level language review and a separate in-product UX pass are complete.
 - Visual smoke tests cover dense node panels, tables, dialogs, notifications, AI nodes, and cross-platform installation/removal.
 
-### 5. Indonesian — `id`
+### 6. Indonesian — `id`
 
 **Entry conditions**
 
